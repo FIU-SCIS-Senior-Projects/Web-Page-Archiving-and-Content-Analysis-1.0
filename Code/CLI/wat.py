@@ -21,11 +21,10 @@ def main():
 		url = line.strip()
 		destpath = args.outdir
 		videos = args.videos
-		download_url(url, args.outdir, args.videos, count)
+		download_url(url, destpath, videos, count)
 		line = args.file.readline()
 		count += 1
 
 
 if __name__ == "__main__":
 	main()
-
