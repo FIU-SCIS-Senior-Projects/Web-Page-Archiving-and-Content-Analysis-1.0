@@ -1,6 +1,7 @@
 import os
 import time
 import re
+import platform
 
 def get_domain_name(url):
 	exp = '^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/\n]+)'
@@ -28,10 +29,29 @@ def download_url(url, dest_path, videos=False, suffix=None):
 	    if file.endswith(".html"):
 			source_path = os.path.join("./files/" + dest_name + "/",file)
 			break
-			
-	make_symlink(source_path, link_dest)
+	if platform.system()=="Linux":
+		make_symlink(source_path, link_dest)
+	elif platform.system()=="Darwin":
+		make_fileloc(source_path,link_dest)
+	else:
+		print "links not yet supported for this platform"
 	return os.path.exists(dest_path)
 
 
 def make_symlink(source_path, link_name):
 	os.symlink(source_path, link_name)
+def make_fileloc(source_path,file_loc_name):
+	source_absolute = os.path.realpath(open(source_path))
+	file_contents = """
+	<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+	<plist version="1.0">
+	<dict>
+	<key>URL</key>
+	<string>file://"""+ source_absolute +"""</string>
+	</dict>
+	</plist>
+	"""
+	file_loc = open(file_loc_name, "w")
+	file_loc.write(file_contents)
+	file_loc.close()
