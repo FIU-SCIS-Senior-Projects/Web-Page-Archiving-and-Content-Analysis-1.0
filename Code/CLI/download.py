@@ -32,7 +32,7 @@ def download_url(url, dest_path, videos=False, suffix=None):
 	if platform.system()=="Linux":
 		make_symlink(source_path, link_dest)
 	elif platform.system()=="Darwin":
-		make_fileloc(source_path,link_dest)
+		make_fileloc(os.path.join(dest_path,source_path),link_dest)
 	else:
 		print "links not yet supported for this platform"
 	return os.path.exists(dest_path)
@@ -41,17 +41,8 @@ def download_url(url, dest_path, videos=False, suffix=None):
 def make_symlink(source_path, link_name):
 	os.symlink(source_path, link_name)
 def make_fileloc(source_path,file_loc_name):
-	source_absolute = os.path.realpath(open(source_path))
-	file_contents = """
-	<?xml version="1.0" encoding="UTF-8"?>
-	<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-	<plist version="1.0">
-	<dict>
-	<key>URL</key>
-	<string>file://"""+ source_absolute +"""</string>
-	</dict>
-	</plist>
-	"""
-	file_loc = open(file_loc_name, "w")
+	source_absolute = os.path.abspath(source_path)
+	file_contents = "bplist00?SURL_?file://"+source_absolute
+	file_loc = open(file_loc_name + ".fileloc", "w")
 	file_loc.write(file_contents)
 	file_loc.close()
