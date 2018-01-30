@@ -31,16 +31,14 @@ def download_url(url, dest_path, videos=False, suffix=None):
 			break
 	if platform.system()=="Linux":
 		make_symlink(source_path, link_dest)
-	elif platform.system()=="Darwin":
-		make_fileloc(os.path.join(dest_path,source_path),link_dest)
 	else:
-		print "links not yet supported for this platform"
+		make_url_file(os.path.join(dest_path,source_path),link_dest)
 	return os.path.exists(dest_path)
 
 
 def make_symlink(source_path, link_name):
 	os.symlink(source_path, link_name)
-def make_fileloc(source_path,file_loc_name):
+def make_url_file(source_path,file_loc_name):
 	source_absolute = os.path.abspath(source_path)
 	file_contents = """[InternetShortcut]
 URL=file://"""+source_absolute+"""
