@@ -42,14 +42,9 @@ def make_symlink(source_path, link_name):
 	os.symlink(source_path, link_name)
 def make_fileloc(source_path,file_loc_name):
 	source_absolute = os.path.abspath(source_path)
-	file_contents = """<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>URL</key>
-	<string>file://"""+ source_absolute+"""</string>
-</dict>
-</plist>"""
-	file_loc = open(file_loc_name + ".fileloc", "w")
+	file_contents = """[InternetShortcut]
+URL=file://"""+source_absolute+"""
+IconIndex=0"""
+	file_loc = open(file_loc_name + ".url", "w")
 	file_loc.write(file_contents)
 	file_loc.close()
