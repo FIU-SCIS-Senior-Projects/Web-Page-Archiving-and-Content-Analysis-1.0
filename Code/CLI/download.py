@@ -1,8 +1,15 @@
 import os
 import time
+import re
+
+def get_domain_name(url):
+	exp = '^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/\n]+)'
+	match = re.search(exp, url)
+	if match:
+		return match.group(1)
 
 def download_url(url, dest_path, videos=False, suffix=None):
-	site_name = "theverge"
+	site_name = get_domain_name(url)
 	timestamp = int(round(time.time() * 10000))
 	dest_name = "{0}_{1}".format(timestamp, site_name)
 	if suffix:
@@ -16,9 +23,15 @@ def download_url(url, dest_path, videos=False, suffix=None):
 
 	cmd = "wget " + flags + " -P " + full_path + " " + "\"" + url + "\""
 	os.system(cmd)
+	link_dest = os.path.join(dest_path, dest_name)
 	for file in os.listdir(full_path):
-		    if file.endswith(".html"):
-				cmd = "ln -s " + os.path.join("./files/" + dest_name + "/",file) + " " + os.path.join(dest_path,dest_name)
-				break
-	os.system(cmd)
+	    if file.endswith(".html"):
+			source_path = os.path.join("./files/" + dest_name + "/",file)
+			break
+			
+	make_symlink(source_path, link_dest)
 	return os.path.exists(dest_path)
+
+
+def make_symlink(source_path, link_name):
+	os.symlink(source_path, link_name)
