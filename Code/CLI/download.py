@@ -2,6 +2,8 @@ import os
 import time
 import re
 import platform
+import subprocess
+import sys
 
 def get_domain_name(url):
 	exp = '^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/\n]+)'
@@ -23,7 +25,15 @@ def download_url(url, dest_path, videos=False, suffix=None):
 	full_path = os.path.join(dest_path + "/files/", dest_name)
 
 	cmd = "wget " + flags + " -P " + full_path + " " + "\"" + url + "\""
-	os.system(cmd)
+
+	try:
+	    retcode = subprocess.call(cmd, shell=True)
+	    if retcode != 0:
+			print >>sys.stderr, "Child was terminated by signal", retcode
+			return
+	except OSError as e:
+		print >>sys.stderr, "Execution failed:", e
+		return
 	link_dest = os.path.join(dest_path, dest_name)
 	for file in os.listdir(full_path):
 	    if file.endswith(".html"):
