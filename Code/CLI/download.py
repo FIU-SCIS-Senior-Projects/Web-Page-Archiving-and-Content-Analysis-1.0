@@ -31,15 +31,19 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 	    retcode = subprocess.call(cmd, shell=True)
 	    if retcode != 0:
 			print >>sys.stderr, "Child was terminated by signal", retcode
-			return
 	except OSError as e:
 		print >>sys.stderr, "Execution failed:", e
 		return
 	link_dest = os.path.join(dest_path, dest_name)
+	max_file = None
 	for file in os.listdir(full_path):
 	    if file.endswith(".html"):
-			source_path = os.path.join("./files/" + dest_name + "/",file)
-			break
+			if not max_file:
+				max_file = file
+			if (os.path.getsize(os.path.join(full_path,file))>os.path.getsize(os.path.join(full_path,max_file))):
+				max_file=file
+	source_path = os.path.join("./files/" + dest_name + "/",max_file)
+
 	if platform.system()=="Linux":
 		make_symlink(source_path, link_dest)
 	else:
