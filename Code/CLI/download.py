@@ -11,7 +11,7 @@ def get_domain_name(url):
 	if match:
 		return match.group(1)
 
-def download_url(url, dest_path, videos=False, suffix=None):
+def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 	site_name = get_domain_name(url)
 	timestamp = int(round(time.time() * 10000))
 	dest_name = "{0}_{1}".format(timestamp, site_name)
@@ -21,7 +21,8 @@ def download_url(url, dest_path, videos=False, suffix=None):
 	flags = "-np -N -k -p -nd -nH -H -E --no-check-certificate -e robots=off -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4'"
 	if not videos:
 		flags = flags + " -R mpg,mpeg,mp3,mp4,wav,au,audio.aspx"
-
+	if rate_limit:
+		flags = flags + " --limit-rate="+rate_limit
 	full_path = os.path.join(dest_path + "/files/", dest_name)
 
 	cmd = "wget " + flags + " -P " + full_path + " " + "\"" + url + "\""
