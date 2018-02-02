@@ -1,5 +1,6 @@
 import argparse
 import os
+import thread
 
 from download import download_url
 
@@ -9,9 +10,11 @@ def main():
 	parser.add_argument("-d", "--outdir", help="Output directory", type=str)
 	parser.add_argument("--rate_limit", help="Value to limit requests. Ex 50k for 50kb/s",dest='rate_limit', type=str)
 	parser.add_argument("--videos", help="Include videos and audio",dest='videos', action='store_true')
+	parser.add_argument("-m", "--threaded", help="Download sites using multiple threads",dest='threaded', action='store_true')
 	parser.set_defaults(outdir="./outdir")
 	parser.set_defaults(rate_limit="")
 	parser.set_defaults(videos=False)
+	parser.set_defaults(threaded=True)
 
 	args = parser.parse_args()
 
