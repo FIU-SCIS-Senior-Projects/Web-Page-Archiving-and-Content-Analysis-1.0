@@ -18,7 +18,7 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 	if suffix:
 		dest_name += "_" + str(suffix)
 
-	flags = "-np -N -k -p -nd -nH -H -E --no-check-certificate -e robots=off -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4'"
+	flags = "-np -N -k -p -nd -nH -H -E -nv --no-check-certificate -e robots=off -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4'"
 	if not videos:
 		flags = flags + " -R mpg,mpeg,mp3,mp4,wav,au,audio.aspx"
 	if rate_limit:
