@@ -1,6 +1,6 @@
 to_parse
 example_output
-test.txt
 .DS_Store
 *.pyc
 outdir/
+test*.txt

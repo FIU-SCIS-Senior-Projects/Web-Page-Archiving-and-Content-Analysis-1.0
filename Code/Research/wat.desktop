@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=WAT 
+Comment=WAT 
+GenericName=WAT 
+Keywords=WAT 
+Exec=wat_open %f
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+MimeType=application/x-wat
+StartupNotify=true

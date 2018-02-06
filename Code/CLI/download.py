@@ -4,6 +4,8 @@ import re
 import platform
 import subprocess
 import sys
+sys.path.append("../Research/main_html_finder/")
+from html_root_finder import *
 
 def get_domain_name(url):
 	exp = '^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/\n]+)'
@@ -20,7 +22,7 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 
 	flags = "-np -N -k -p -nd -nH -H -E -nv --no-check-certificate -e robots=off -U 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4'"
 	if not videos:
-		flags = flags + " -R mpg,mpeg,mp3,mp4,wav,au,audio.aspx"
+		flags = flags + " -R mpg,mpeg,mp3,mp4,wav,au,audio.aspx,.webm"
 	if rate_limit:
 		flags = flags + " --limit-rate="+rate_limit
 	full_path = os.path.join(dest_path + "/files/", dest_name)
@@ -28,21 +30,25 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 	cmd = "wget " + flags + " -P " + full_path + " " + "\"" + url + "\""
 
 	try:
-	    retcode = subprocess.call(cmd, shell=True)
-	    if retcode != 0:
-			print >>sys.stderr, "Child was terminated by signal", retcode
+	    # retcode = subprocess.call(cmd, shell=True)
+	    # if retcode != 0:
+		# 	print >>sys.stderr, "Child was terminated by signal", retcode
+		wget_output = subprocess.check_output(cmd,stderr=subprocess.STDOUT, shell=True)
+	except subprocess.CalledProcessError as e:
+		if e.returncode==8:
+			print "error but might be okay. We need to figure out when it's okay and when it isn't"
+			wget_output = e.output
+		else:
+			return e.returncode
 	except OSError as e:
 		print >>sys.stderr, "Execution failed:", e
 		return
 	link_dest = os.path.join(dest_path, dest_name)
-	max_file = None
-	for file in os.listdir(full_path):
-	    if file.endswith(".html"):
-			if not max_file:
-				max_file = file
-			if (os.path.getsize(os.path.join(full_path,file))>os.path.getsize(os.path.join(full_path,max_file))):
-				max_file=file
-	source_path = os.path.join("./files/" + dest_name + "/",max_file)
+
+	# index file = find_root_html(full_path)
+	index_file = search_wget_output(wget_output)
+	print "hi it's " + index_file
+	source_path = os.path.join("./files/" + dest_name + "/",index_file)
 
 	if platform.system()=="Linux":
 		make_symlink(source_path, link_dest)
