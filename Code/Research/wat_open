@@ -1,2 +1,4 @@
-unzip -o $1 -d /tmp/wat_temp_dir
-xdg-open /tmp/wat_temp_dir/*/$(cat /tmp/wat_temp_dir/*/wat_link.txt)
+dir=$(basename $1 .wat)
+echo ${dir}
+unzip -o $1 -d /tmp/wat_temp_dir/${dir}
+xdg-open /tmp/wat_temp_dir/${dir}/*/$(cat /tmp/wat_temp_dir/${dir}/*/wat_link.txt)
