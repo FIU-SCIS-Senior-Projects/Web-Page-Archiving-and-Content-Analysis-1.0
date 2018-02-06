@@ -1,0 +1,36 @@
+{
+  "name": "watapp",
+  "version": "1.0.0",
+  "description": "View wat files",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "build --dir",
+    "dist": "build"
+  },
+  "build": {
+    "appId": "edu.fiu.watapp",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "type": "development"
+    },
+    "protocols": [
+      {
+        "name": "watapp",
+        "role": "Viewer",
+        "schemes": [
+          "watapp"
+        ]
+      }
+    ]
+  },
+  "repository": "",
+  "author": "FIU",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "~1.7.8",
+    "electron-builder": "^19.56.0"
+  },
+  "dependencies": {
+  }
+}
