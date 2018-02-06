@@ -1,0 +1,2 @@
+unzip -o $1 -d /tmp/wat_temp_dir
+xdg-open /tmp/wat_temp_dir/*/$(cat /tmp/wat_temp_dir/*/wat_link.txt)
