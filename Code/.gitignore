@@ -4,3 +4,4 @@ test.txt
 .DS_Store
 *.pyc
 outdir/
+test*.txt

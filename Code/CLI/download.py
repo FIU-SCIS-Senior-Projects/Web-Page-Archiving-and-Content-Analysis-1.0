@@ -4,6 +4,8 @@ import re
 import platform
 import subprocess
 import sys
+sys.path.append("../Research/main_html_finder/")
+from html_root_finder import find_root_html
 
 def get_domain_name(url):
 	exp = '^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/\n]+)'
@@ -35,14 +37,15 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 		print >>sys.stderr, "Execution failed:", e
 		return
 	link_dest = os.path.join(dest_path, dest_name)
-	max_file = None
-	for file in os.listdir(full_path):
-	    if file.endswith(".html"):
-			if not max_file:
-				max_file = file
-			if (os.path.getsize(os.path.join(full_path,file))>os.path.getsize(os.path.join(full_path,max_file))):
-				max_file=file
-	source_path = os.path.join("./files/" + dest_name + "/",max_file)
+	# max_file = None
+	# for file in os.listdir(full_path):
+	#     if file.endswith(".html"):
+	# 		if not max_file:
+	# 			max_file = file
+	# 		if (os.path.getsize(os.path.join(full_path,file))>os.path.getsize(os.path.join(full_path,max_file))):
+	# 			max_file=file
+	index_file = find_root_html(full_path)
+	source_path = os.path.join("./files/" + dest_name + "/",index_file)
 
 	if platform.system()=="Linux":
 		make_symlink(source_path, link_dest)
