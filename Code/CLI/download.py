@@ -4,6 +4,7 @@ import re
 import platform
 import subprocess
 import sys
+import shutil
 sys.path.append("../Research/main_html_finder/")
 from html_root_finder import *
 
@@ -47,13 +48,16 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 
 	# index file = find_root_html(full_path)
 	index_file = search_wget_output(wget_output)
-	print "hi it's " + index_file
+	f=open(os.path.join(full_path,"wat_link.txt"),"w")
+	f.write(index_file)
+	f.close()
 	source_path = os.path.join("./files/" + dest_name + "/",index_file)
 
 	if platform.system()=="Linux":
 		make_symlink(source_path, link_dest)
 	else:
 		make_url_file(os.path.join(dest_path,source_path),link_dest)
+	make_wat_file(full_path)
 	return os.path.exists(dest_path)
 
 
@@ -67,3 +71,11 @@ IconIndex=0"""
 	file_loc = open(file_loc_name + ".url", "w")
 	file_loc.write(file_contents)
 	file_loc.close()
+
+def make_wat_file(full_path):
+	for file in os.listdir(full_path):
+		if os.path.getmtime(os.path.join(full_path,file))<=315532800:
+			with open(os.path.join(full_path,file), 'a'):
+				os.utime(os.path.join(full_path,file), None)
+	shutil.make_archive(full_path, 'zip', full_path)
+	os.rename(full_path+".zip",full_path+".wat")
