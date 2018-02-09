@@ -28,18 +28,16 @@ function createWindow() {
 
   protocol.registerHttpProtocol(
     PROTOCOL_PREFIX,
-    (req, cb) => {
+    (req, callback) => {
       const reqUrl = req.url;
       devToolsLog(req);
+      console.log(req);
       devToolsLog(`Received url: ${reqUrl}`);
       // and load the index.html of the app.
-      mainWindow.loadURL(
-        url.format({
-          pathname: path.join(__dirname, "index.html"),
-          protocol: "file:",
-          slashes: true
-        })
-      );
+      callback({
+        url: path.join(__dirname, "index.html"),
+        method: "GET"
+      })
     },
     err => {
       if (!err) {
@@ -51,8 +49,13 @@ function createWindow() {
     }
   );
 
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.loadURL(
+    url.format({
+      pathname: path.join(__dirname, "index.html"),
+      protocol: "file:",
+      slashes: true
+    })
+  );
 
   // Emitted when the window is closed.
   mainWindow.on("closed", function() {
