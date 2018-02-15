@@ -22,7 +22,11 @@
           "watapp"
         ]
       }
-    ]
+    ],
+    "fileAssociations": {
+      "ext": "wat",
+      "name": "WAT"
+    }
   },
   "repository": "",
   "author": "FIU",

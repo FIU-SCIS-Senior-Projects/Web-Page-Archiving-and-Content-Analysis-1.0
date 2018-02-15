@@ -37,17 +37,26 @@ function createWindow() {
       callback({
         url: path.join(__dirname, "index.html"),
         method: "GET"
-      })
+      });
     },
     err => {
       if (!err) {
         devToolsLog("registered watapp protocol");
       } else {
         console.error("couldn't register protocol");
-        console.error(error);
+        console.error(err);
       }
     }
   );
+
+  protocol.registerFileProtocol("wat", (req, cb) => {
+    devToolsLog("Register file protocol", req.url);
+    cb({ path: path.join(__dirname, "index.html") });
+  }, error => {
+    if (error) {
+      console.error("Something went wrong");
+    }
+  });
 
   mainWindow.loadURL(
     url.format({
