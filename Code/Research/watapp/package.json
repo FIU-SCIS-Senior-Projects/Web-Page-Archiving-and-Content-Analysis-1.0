@@ -35,6 +35,5 @@
     "electron": "~1.7.8",
     "electron-builder": "^19.56.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
