@@ -16,13 +16,14 @@ const path = require("path");
 const url = require("url");
 
 let opened_file = process.argv[1];
+const temp_dest = os.tmpdir();
 
 function unzip_wat(file) {
-  var temp_dest = os.tmpdir();
   devToolsLog(temp_dest);
-  fs.createReadStream(file).pipe(unzip.Extract({ path: temp_dest }));
+  var unzipper = unzip.Extract({ path: temp_dest })
+  fs.createReadStream(file).pipe(unzipper);
 
-  return temp_dest;
+  return unzipper;
 }
 
 function getWatLink(dir) {
@@ -51,17 +52,33 @@ function devToolsLog(s) {
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 800, height: 600 });
-  mainWindow.webContents.openDevTools();
-
+  // mainWindow.webContents.openDevTools();
+  mainWindow.maximize()
   devToolsLog(opened_file);
   const watfile_path = opened_file.split("/");
   const full_filename = watfile_path[watfile_path.length - 1]; // file.wat
   const filename = full_filename.substr(0, full_filename.indexOf(".wat"));
 
-  let temp_dest = unzip_wat(opened_file);
+  let unzipper = unzip_wat(opened_file);
+  unzipper.on('close',()=>{
+    var fileLocation;
+    if (fs.existsSync(path.join(temp_dest,`${filename}`))) {
+        fileLocation = path.join(temp_dest, `${filename}`);
+    }else{
+        fileLocation = temp_dest;
+    }
+    let dest_file = getWatLink(fileLocation);
 
-  let dest_file = getWatLink(path.join(temp_dest, filename));
-
+      mainWindow.loadURL(
+        url.format({
+          // pathname: path.join(__dirname, "index.html"),
+          pathname: path.join(fileLocation, `${dest_file}`),
+          protocol: "file:",
+          slashes: true
+        })
+      );
+  }
+  );
   protocol.registerFileProtocol(
     "wat",
     (req, cb) => {
@@ -98,14 +115,6 @@ function createWindow() {
     }
   );
 
-  mainWindow.loadURL(
-    url.format({
-      // pathname: path.join(__dirname, "index.html"),
-      pathname: path.join(temp_dest, `${filename}/${dest_file}`),
-      protocol: "file:",
-      slashes: true
-    })
-  );
 
   // Emitted when the window is closed.
   mainWindow.on("closed", function() {
