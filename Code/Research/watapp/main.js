@@ -18,16 +18,15 @@ const url = require("url");
 let opened_file = process.argv[1];
 
 function unzip_wat(file) {
-
   var temp_dest = os.tmpdir();
   devToolsLog(temp_dest);
   fs.createReadStream(file).pipe(unzip.Extract({ path: temp_dest }));
 
-  return temp_dest
+  return temp_dest;
 }
 
-function getWatLink(dir){
-  var url = fs.readFileSync(path.join(dir,"wat_link.txt"))
+function getWatLink(dir) {
+  var url = fs.readFileSync(path.join(dir, "wat_link.txt"));
   return url.toString();
 }
 
@@ -60,6 +59,8 @@ function createWindow() {
   const filename = full_filename.substr(0, full_filename.indexOf(".wat"));
 
   let temp_dest = unzip_wat(opened_file);
+
+  let dest_file = getWatLink(path.join(temp_dest, filename));
 
   protocol.registerFileProtocol(
     "wat",
@@ -100,7 +101,7 @@ function createWindow() {
   mainWindow.loadURL(
     url.format({
       // pathname: path.join(__dirname, "index.html"),
-      pathname: path.join(temp_dest, `${filename}/index.html`),
+      pathname: path.join(temp_dest, `${filename}/${dest_file}`),
       protocol: "file:",
       slashes: true
     })
