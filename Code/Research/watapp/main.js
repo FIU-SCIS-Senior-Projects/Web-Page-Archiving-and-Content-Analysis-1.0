@@ -1,4 +1,7 @@
 const electron = require("electron");
+const unzip = require("unzip")
+const fs = require("fs");
+const fstream = require("fstream");
 // Module to control application life.
 const app = electron.app;
 // Module to create native browser window.
@@ -10,6 +13,17 @@ const PROTOCOL_PREFIX = PROTOCOL_STRING.split(":")[0];
 
 const path = require("path");
 const url = require("url");
+
+const opened_file = process.argv[1];
+
+// function unzip_wat(file){
+//   var readStream = fs.createReadStream(file);
+//   var writeStream = fstream.Writer('/tmp');
+//
+//   readStream
+//     .pipe(unzip.Parse())
+//     .pipe(writeStream)
+// }
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -82,6 +96,8 @@ function createWindow() {
 function appReady() {
   createWindow();
   // registerProtocols();
+  // unzip_wat(process.argv[1])
+
 }
 
 // This method will be called when Electron has finished
