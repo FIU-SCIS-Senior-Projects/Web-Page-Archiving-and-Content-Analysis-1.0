@@ -50,6 +50,10 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 
   devToolsLog(opened_file);
+  const watfile_path = opened_file.split("/");
+  const full_filename = watfile_path[watfile_path.length - 1]; // file.wat
+  const filename = full_filename.substr(0, full_filename.indexOf(".wat"));
+
   let temp_dest = unzip_wat(opened_file);
 
   protocol.registerFileProtocol(
@@ -91,7 +95,7 @@ function createWindow() {
   mainWindow.loadURL(
     url.format({
       // pathname: path.join(__dirname, "index.html"),
-      pathname: path.join(temp_dest, "/testfile/index.html"),
+      pathname: path.join(temp_dest, `${filename}/index.html`),
       protocol: "file:",
       slashes: true
     })
