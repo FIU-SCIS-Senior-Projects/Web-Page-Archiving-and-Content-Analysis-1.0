@@ -2,6 +2,7 @@ const electron = require("electron");
 const unzip = require("unzip");
 const fs = require("fs");
 const fstream = require("fstream");
+const os = require("os");
 // Module to control application life.
 const app = electron.app;
 // Module to create native browser window.
@@ -17,11 +18,12 @@ const url = require("url");
 let opened_file = process.argv[1];
 
 function unzip_wat(file) {
-  devToolsLog(process.argv);
-  var readStream = fs.createReadStream(file);
-  var writeStream = fstream.Writer("/tmp");
 
-  readStream.pipe(unzip.Parse()).pipe(writeStream);
+  var temp_dest = os.tmpdir();
+  devToolsLog(temp_dest);
+  fs.createReadStream(file).pipe(unzip.Extract({ path: temp_dest }));
+
+  return temp_dest
 }
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -33,7 +35,7 @@ let mainWindow;
 // });
 
 app.on("open-file", (event, path) => {
-    opened_file = path;
+  opened_file = path;
 });
 
 function devToolsLog(s) {
@@ -48,7 +50,7 @@ function createWindow() {
   mainWindow.webContents.openDevTools();
 
   devToolsLog(opened_file);
-  unzip_wat(opened_file);
+  let temp_dest = unzip_wat(opened_file);
 
   protocol.registerFileProtocol(
     "wat",
@@ -88,7 +90,8 @@ function createWindow() {
 
   mainWindow.loadURL(
     url.format({
-      pathname: path.join(__dirname, "index.html"),
+      // pathname: path.join(__dirname, "index.html"),
+      pathname: path.join(temp_dest, "/testfile/index.html"),
       protocol: "file:",
       slashes: true
     })
@@ -121,7 +124,6 @@ app.on("window-all-closed", function() {
     app.quit();
   }
 });
-
 
 app.on("activate", function() {
   // On OS X it's common to re-create a window in the app when the
