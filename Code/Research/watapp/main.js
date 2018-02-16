@@ -26,6 +26,11 @@ function unzip_wat(file) {
   return temp_dest
 }
 
+function getWatLink(dir){
+  var url = fs.readFileSync(path.join(dir,"wat_link.txt"))
+  return url.toString();
+}
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
