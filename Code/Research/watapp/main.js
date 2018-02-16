@@ -1,5 +1,5 @@
 const electron = require("electron");
-const unzip = require("unzip")
+const unzip = require("unzip");
 const fs = require("fs");
 const fstream = require("fstream");
 // Module to control application life.
@@ -14,20 +14,27 @@ const PROTOCOL_PREFIX = PROTOCOL_STRING.split(":")[0];
 const path = require("path");
 const url = require("url");
 
-const opened_file = process.argv[1];
+let opened_file = process.argv[1];
 
-// function unzip_wat(file){
-//   var readStream = fs.createReadStream(file);
-//   var writeStream = fstream.Writer('/tmp');
-//
-//   readStream
-//     .pipe(unzip.Parse())
-//     .pipe(writeStream)
-// }
+function unzip_wat(file) {
+  devToolsLog(process.argv);
+  var readStream = fs.createReadStream(file);
+  var writeStream = fstream.Writer("/tmp");
+
+  readStream.pipe(unzip.Parse()).pipe(writeStream);
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+
+// app.on("open-url", (event, url) => {
+//   devToolsLog(url);
+// });
+
+app.on("open-file", (event, path) => {
+    opened_file = path;
+});
 
 function devToolsLog(s) {
   if (mainWindow && mainWindow.webContents) {
@@ -39,6 +46,22 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 800, height: 600 });
   mainWindow.webContents.openDevTools();
+
+  devToolsLog(opened_file);
+  unzip_wat(opened_file);
+
+  protocol.registerFileProtocol(
+    "wat",
+    (req, cb) => {
+      devToolsLog("Register file protocol", req.url);
+      cb({ path: path.join(__dirname, "index.html") });
+    },
+    error => {
+      if (error) {
+        console.error("Something went wrong");
+      }
+    }
+  );
 
   protocol.registerHttpProtocol(
     PROTOCOL_PREFIX,
@@ -63,15 +86,6 @@ function createWindow() {
     }
   );
 
-  protocol.registerFileProtocol("wat", (req, cb) => {
-    devToolsLog("Register file protocol", req.url);
-    cb({ path: path.join(__dirname, "index.html") });
-  }, error => {
-    if (error) {
-      console.error("Something went wrong");
-    }
-  });
-
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, "index.html"),
@@ -89,15 +103,9 @@ function createWindow() {
   });
 }
 
-// function registerProtocols() {
-
-// }
-
 function appReady() {
   createWindow();
-  // registerProtocols();
-  // unzip_wat(process.argv[1])
-
+  // unzip_wat(opened_file);
 }
 
 // This method will be called when Electron has finished
@@ -113,6 +121,7 @@ app.on("window-all-closed", function() {
     app.quit();
   }
 });
+
 
 app.on("activate", function() {
   // On OS X it's common to re-create a window in the app when the

@@ -36,8 +36,9 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "~1.7.8",
-    "electron-builder": "^19.56.0",
-    "unzip": "^0.1.11"
+    "electron-builder": "^19.56.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "unzip": "^0.1.11"
+  }
 }
