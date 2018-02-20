@@ -186,10 +186,14 @@ ipcMain.on('download', (event, downloadOptions) => {
   if(downloadOptions.videos){
     optionsArray.push('--videos')
   }
+  event.sender.send('downloadOutput', "Beginning download");
+
   const downloader = spawn('python', optionsArray);
 
   downloader.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
+    event.sender.send('downloadOutput', data);
+
   });
 
   downloader.stderr.on('data', (data) => {
@@ -198,5 +202,7 @@ ipcMain.on('download', (event, downloadOptions) => {
 
     downloader.on('close', (code) => {
       console.log(`child process exited with code ${code}`);
+      event.sender.send('downloadOutput', `Finished download with code ${code}`);
+
     });
 })

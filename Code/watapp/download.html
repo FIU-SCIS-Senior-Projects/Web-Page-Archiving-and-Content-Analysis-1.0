@@ -3,16 +3,15 @@
 
 <body>
   <h1>Select download options</h1>
-  <form name="ipcForm" onSubmit="#">
-      <input type="text" placeholder="Please select a file" id="url-file" disabled="disabled"/>
-      <input type="button" value="Choose a file of URLS" id="get-url-file"/>
-      <input type="text" placeholder="Please select a directory" id="outdir" disabled="disabled"/>
-      <input type="button" value="Select output directory" id="select-outdir"/>
-      Rate limit (empty if none): <input type="text" name="limit" id="rate-limit">
-      Include videos: <input type="radio" id="videos">
-      Number of threads: <input type="number" id="threads" value=1 min=1>
-      <input type="submit" value="Download" id="download">
-  </form>
+  <input type="text" placeholder="Please select a file" id="url-file" disabled="disabled"/>
+  <input type="button" value="Choose a file of URLS" id="get-url-file"/></br>
+  <input type="text" placeholder="Please select a directory" id="outdir" disabled="disabled"/>
+  <input type="button" value="Select output directory" id="select-outdir"/></br>
+  Rate limit (empty if none): <input type="text" name="limit" id="rate-limit"></br>
+  Include videos: <input type="radio" id="videos"></br>
+  Number of threads: <input type="number" id="threads" value=1 min=1></br>
+  <input type="submit" value="Download" id="download"></br>
+  <div id="output"></div>
   <script>
     // You can also require other files to run in this process
     require('./renderer.js')
