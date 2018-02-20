@@ -5,6 +5,7 @@ import platform
 import subprocess
 import sys
 import shutil
+import zipfile
 sys.path.append("../Research/main_html_finder/")
 from html_root_finder import *
 
@@ -58,7 +59,7 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 	else:
 		make_url_file(os.path.join(dest_path,source_path),link_dest)
 	make_wat_file(full_path)
-	return os.path.exists(dest_path)
+	return make_wat_file(full_path)
 
 
 def make_symlink(source_path, link_name):
@@ -77,5 +78,11 @@ def make_wat_file(full_path):
 		if os.path.getmtime(os.path.join(full_path,file))<=315532800:
 			with open(os.path.join(full_path,file), 'a'):
 				os.utime(os.path.join(full_path,file), None)
-	shutil.make_archive(full_path, 'zip', full_path)
+	zf = zipfile.ZipFile(full_path+".zip", "w", zipfile.ZIP_DEFLATED)
+	for dirname, subdirs, files in os.walk(full_path):
+	    zf.write(dirname)
+	    for filename in files:
+	        zf.write(os.path.join(dirname, filename))
+	zf.close()
+	# shutil.make_archive(full_path, 'zip', full_path)
 	os.rename(full_path+".zip",full_path+".wat")
