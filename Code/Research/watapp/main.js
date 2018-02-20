@@ -8,6 +8,7 @@ const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 const protocol = electron.protocol;
+const {ipcMain} = require('electron')
 
 const PROTOCOL_STRING = "watapp://";
 const PROTOCOL_PREFIX = PROTOCOL_STRING.split(":")[0];
@@ -16,6 +17,7 @@ const path = require("path");
 const url = require("url");
 
 let opened_file = process.argv[1];
+
 const temp_dest = os.tmpdir();
 
 function unzip_wat(file) {
@@ -49,12 +51,7 @@ function devToolsLog(s) {
   }
 }
 
-function createWindow() {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600 });
-  // mainWindow.webContents.openDevTools();
-  mainWindow.maximize()
-  devToolsLog(opened_file);
+function openWAT(opened_file){
   const watfile_path = opened_file.split("/");
   const full_filename = watfile_path[watfile_path.length - 1]; // file.wat
   const filename = full_filename.substr(0, full_filename.indexOf(".wat"));
@@ -62,16 +59,16 @@ function createWindow() {
   let unzipper = unzip_wat(opened_file);
   unzipper.on('close',()=>{
     var fileLocation;
+
     if (fs.existsSync(path.join(temp_dest,`${filename}`))) {
         fileLocation = path.join(temp_dest, `${filename}`);
     }else{
         fileLocation = temp_dest;
     }
-    let dest_file = getWatLink(fileLocation);
 
+    let dest_file = getWatLink(fileLocation);
       mainWindow.loadURL(
         url.format({
-          // pathname: path.join(__dirname, "index.html"),
           pathname: path.join(fileLocation, `${dest_file}`),
           protocol: "file:",
           slashes: true
@@ -79,6 +76,26 @@ function createWindow() {
       );
   }
   );
+}
+
+function createWindow() {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({ width: 800, height: 600 });
+  // mainWindow.webContents.openDevTools();
+  if(opened_file && opened_file != "."){
+    devToolsLog(opened_file);
+    mainWindow.maximize()
+    openWAT(opened_file);
+  }else{
+    mainWindow.loadURL(
+      url.format({
+        pathname: path.join(__dirname, "index.html"),
+        protocol: "file:",
+        slashes: true
+      })
+    );
+  }
+
   protocol.registerFileProtocol(
     "wat",
     (req, cb) => {
@@ -154,3 +171,7 @@ app.on("activate", function() {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+ipcMain.on('openWAT', (event, file) => {
+  mainWindow.maximize()
+  openWAT(file);
+})

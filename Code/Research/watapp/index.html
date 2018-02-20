@@ -2,23 +2,20 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>WAT: Web Analysis Tool</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <h1>WAT: Web Analysis Tool</h1>
 
+    <div>
+      <button>Download</button>
+      <input type="button" value="Choose a file" id="view-wat"/>
+    </div>
 
-    <p>custom todo protocol link
-      <a href="watapp://test1">test 1</a>,
-      <a href="watapp://test2">test 2</a>
-    </p>
     <script>
       // You can also require other files to run in this process
       require('./renderer.js')
+      require('./viewerDialog.js')
     </script>
   </body>
 </html>
