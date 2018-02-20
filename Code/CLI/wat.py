@@ -27,6 +27,8 @@ def main():
 		url = line.strip()
 		URLS.append(url)
 		line = args.file.readline()
+	print str(len(URLS)) + " URLS found"
+	sys.stdout.flush()
 	num_threads=args.threads
 	with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
 		future_to_url = {executor.submit(download_url,URLS[i], destpath, videos, i, args.rate_limit): i for i in range(0,len(URLS))}
