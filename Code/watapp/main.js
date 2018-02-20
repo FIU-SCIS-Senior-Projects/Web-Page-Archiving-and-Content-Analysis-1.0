@@ -9,6 +9,7 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const protocol = electron.protocol;
 const {ipcMain} = require('electron')
+const { spawn } = require('child_process');
 
 const PROTOCOL_STRING = "watapp://";
 const PROTOCOL_PREFIX = PROTOCOL_STRING.split(":")[0];
@@ -174,4 +175,28 @@ app.on("activate", function() {
 ipcMain.on('openWAT', (event, file) => {
   mainWindow.maximize()
   openWAT(file);
+})
+
+ipcMain.on('download', (event, downloadOptions) => {
+  const script = path.join(__dirname, '../CLI', 'wat.py')
+  var optionsArray=[script, '-f', downloadOptions.filename, '-d', downloadOptions.outdir, '-m', downloadOptions.threads]
+  if (downloadOptions.rateLimit){
+    optionsArray.push('--rate-limit=' + downloadOptions.rateLimit)
+  }
+  if(downloadOptions.videos){
+    optionsArray.push('--videos')
+  }
+  const downloader = spawn('python', optionsArray);
+
+  downloader.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  downloader.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+    downloader.on('close', (code) => {
+      console.log(`child process exited with code ${code}`);
+    });
 })

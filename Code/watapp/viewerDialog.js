@@ -5,7 +5,7 @@ const {ipcRenderer} = require('electron');
 document.getElementById('view-wat').addEventListener('click',()=>{
   dialog.showOpenDialog({
     filters: [
-        {name: 'wat', extensions: ['wat']},
+        {name: 'wat files', extensions: ['wat']},
         {name: 'All Files', extensions: ['*']}
       ]
     },function (fileNames) {
