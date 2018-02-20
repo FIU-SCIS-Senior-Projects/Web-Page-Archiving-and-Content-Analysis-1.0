@@ -3,13 +3,26 @@
   <head>
     <meta charset="UTF-8">
     <title>WAT: Web Analysis Tool</title>
+    <style>
+        .container{
+            text-align: center;
+        }
+        .buttons{
+          display: flex;
+          margin: 0 auto;
+          width: 100%;
+          justify-content: space-around;
+        }
+    </style>
   </head>
   <body>
-    <h1>WAT: Web Analysis Tool</h1>
+    <div class="container">
+      <h1>WAT: Web Analysis Tool</h1>
 
-    <div>
-      <button onclick="window.location.href='download.html'">Download</button>
-      <input type="button" value="Choose a file" id="view-wat"/>
+      <div class="buttons">
+        <button onclick="window.location.href='download.html'">Download</button>
+        <input type="button" value="Choose a file" id="view-wat"/>
+      </div>
     </div>
 
     <script>
