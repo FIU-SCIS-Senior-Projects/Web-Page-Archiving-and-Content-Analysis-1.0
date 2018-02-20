@@ -25,7 +25,6 @@ def main():
 	while line:
 		url = line.strip()
 		URLS.append(url)
-		# download_url(url, destpath, videos, count, args.rate_limit)
 		line = args.file.readline()
 	num_threads=args.threads
 	with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
@@ -37,8 +36,6 @@ def main():
 				print data
 			except Exception as exc:
 				print('%r generated an exception: %s' % (url, exc))
-			# else:
-			# 	print('%r page is %d bytes' % (url, len(data)))
 
 if __name__ == "__main__":
 	main()
