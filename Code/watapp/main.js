@@ -191,8 +191,14 @@ ipcMain.on('download', (event, downloadOptions) => {
   const downloader = spawn('python', optionsArray);
 
   downloader.stdout.on('data', (data) => {
+    data = String(data).split("\n")
     console.log(`stdout: ${data}`);
-    event.sender.send('downloadOutput', data);
+    for(var i=0; i<data.length; i++){
+      if (data[i].startsWith("Finished for URL")){
+        event.sender.send('downloadOutput', data[i]);
+
+      }
+    }
 
   });
 
