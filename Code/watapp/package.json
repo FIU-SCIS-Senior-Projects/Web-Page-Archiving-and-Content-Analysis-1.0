@@ -17,7 +17,6 @@
     "linux": {
       "category": "Development"
     },
-    "extraResources": "CLI",
     "protocols": [
       {
         "name": "watapp",
@@ -27,6 +26,10 @@
         ]
       }
     ],
+    "extraResources": {
+      "from": "../CLI",
+      "to": "CLI"
+    },
     "fileAssociations": {
       "ext": "wat",
       "name": "WAT"
