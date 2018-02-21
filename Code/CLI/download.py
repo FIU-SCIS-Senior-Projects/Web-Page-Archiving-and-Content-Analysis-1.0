@@ -6,7 +6,6 @@ import subprocess
 import sys
 import shutil
 import zipfile
-sys.path.append("../Research/main_html_finder/")
 from html_root_finder import *
 
 def get_domain_name(url):

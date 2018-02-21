@@ -179,6 +179,7 @@ ipcMain.on('openWAT', (event, file) => {
 
 ipcMain.on('download', (event, downloadOptions) => {
   const script = path.join(__dirname, '../CLI', 'wat.py')
+  // const script = path.join(app.getAppPath(), '..', 'CLI', 'wat.py')
   var optionsArray=[script, '-f', downloadOptions.filename, '-d', downloadOptions.outdir, '-m', downloadOptions.threads]
   if (downloadOptions.rateLimit){
     optionsArray.push('--rate-limit=' + downloadOptions.rateLimit)
@@ -197,7 +198,7 @@ ipcMain.on('download', (event, downloadOptions) => {
       if (data[i].startsWith("Finished for URL")){
         event.sender.send('downloadOutput', data[i]);
       }else if(data[i].endsWith("URLS found")){
-        event.sender.send('downloadOutput', data[i]);        
+        event.sender.send('downloadOutput', data[i]);
       }
     }
 

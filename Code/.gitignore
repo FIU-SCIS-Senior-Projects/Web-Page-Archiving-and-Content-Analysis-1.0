@@ -5,3 +5,6 @@ example_output
 outdir/
 test*.txt
 wget-log
+dist
+build
+wat.spec

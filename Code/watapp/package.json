@@ -17,6 +17,7 @@
     "linux": {
       "category": "Development"
     },
+    "extraResources": "CLI",
     "protocols": [
       {
         "name": "watapp",
