@@ -43,6 +43,7 @@
     "electron-builder": "^19.56.0"
   },
   "dependencies": {
+    "decompress-zip": "^0.3.0",
     "unzip": "^0.1.11"
   }
 }

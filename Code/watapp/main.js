@@ -1,5 +1,6 @@
 const electron = require("electron");
 const unzip = require("unzip");
+var DecompressZip = require('decompress-zip');
 const fs = require("fs");
 const fstream = require("fstream");
 const os = require("os");
@@ -23,9 +24,16 @@ const temp_dest = os.tmpdir();
 
 function unzip_wat(file) {
   devToolsLog(temp_dest);
-  var unzipper = unzip.Extract({ path: temp_dest })
-  fs.createReadStream(file).pipe(unzipper);
-
+  // var unzipper = unzip.Extract({ path: temp_dest })
+  // fs.createReadStream(file).pipe(unzipper);
+  var unzipper = new DecompressZip(file);
+  unzipper.extract({
+      path: temp_dest,
+      filter: function (file) {
+          return file.type !== "SymbolicLink";
+      }
+  });
+  console.log(file);
   return unzipper;
 }
 
@@ -58,16 +66,21 @@ function openWAT(opened_file){
   const filename = full_filename.substr(0, full_filename.indexOf(".wat"));
 
   let unzipper = unzip_wat(opened_file);
-  unzipper.on('close',()=>{
+  unzipper.on('error', function (err) {
+    console.log('Caught an error');
+    console.log(err);
+});
+  unzipper.on('extract',(e)=>{
     var fileLocation;
-
+    console.log(e);
     if (fs.existsSync(path.join(temp_dest,`${filename}`))) {
         fileLocation = path.join(temp_dest, `${filename}`);
     }else{
         fileLocation = temp_dest;
     }
-
+    console.log(fileLocation);
     let dest_file = getWatLink(fileLocation);
+    console.log(dest_file);
       mainWindow.loadURL(
         url.format({
           pathname: path.join(fileLocation, `${dest_file}`),
