@@ -211,6 +211,8 @@ ipcMain.on('download', (event, downloadOptions) => {
         event.sender.send('downloadOutput', data[i]);
       }else if(data[i].endsWith("URLS found")){
         event.sender.send('downloadOutput', data[i]);
+      }else if(data[i].startsWith("It can be found at ")){
+        event.sender.send('downloadOutput', data[i].substr("It can be found at ".length));
       }
     }
 

@@ -43,9 +43,21 @@ document.getElementById('select-outdir').addEventListener('click',()=>{
       ipcRenderer.send('download', downloadOptions);
   },false);
 ipcRenderer.on('downloadOutput', (event, output) => {
-  var node = document.createElement("p");
-  var textnode = document.createTextNode(`${output}`);
-  node.appendChild(textnode);
-  document.getElementById('output').appendChild(node);
-  console.log(`${output}`);
+  //var output = str(output).trim();
+  console.log("last 4: " + output.slice(-4));
+  if(output.slice(-4)==".wat"){
+    //        ipcRenderer.send("openWAT",output)
+    var button=document.createElement("button");
+    button.innerHTML = "Open WAT";
+    button.addEventListener('click',()=>{
+      ipcRenderer.send("openWAT",output);
+    })
+    document.getElementById('output').appendChild(button);
+  }else{
+    var node = document.createElement("p");
+    var textnode = document.createTextNode(`${output}`);
+    node.appendChild(textnode);
+    document.getElementById('output').appendChild(node);
+    console.log(`${output}`);
+  }
 })

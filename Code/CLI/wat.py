@@ -36,8 +36,8 @@ def main():
 			i = future_to_url[future]
 			try:
 				data = future.result()
-				print data
 				print "Finished for URL #" + str(i) + ": " + URLS[i]
+				print "It can be found at " + str(data)
 				sys.stdout.flush()
 			except Exception as exc:
 				print('%r generated an exception: %s' % (url, exc))

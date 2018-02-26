@@ -57,8 +57,8 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 		make_symlink(source_path, link_dest)
 	else:
 		make_url_file(os.path.join(dest_path,source_path),link_dest)
-	make_wat_file(full_path)
-	return os.path.exists(dest_path)
+	wat_file = make_wat_file(full_path)
+	return os.path.abspath(wat_file)
 
 
 def make_symlink(source_path, link_name):
@@ -83,3 +83,4 @@ def make_wat_file(full_path):
 	        zf.write(os.path.join(dirname, filename), arcname=filename)
 	zf.close()
 	os.rename(full_path+".zip",full_path+".wat")
+	return full_path+".wat"
