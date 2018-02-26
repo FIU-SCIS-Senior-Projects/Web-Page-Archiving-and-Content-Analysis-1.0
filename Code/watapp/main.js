@@ -89,13 +89,16 @@ function openWAT(opened_file) {
     let dest_file = getWatLink(fileLocation);
     console.log(dest_file);
 
-    mainWindow.loadURL(
-      url.format({
-        pathname: path.join(fileLocation, `${dest_file}`),
-        protocol: "file:",
-        slashes: true
-      })
-    );
+    let url_to_load = url.format({
+      pathname: path.join(fileLocation, `${dest_file}`),
+      protocol: "file:",
+      slashes: true
+    });
+    if (preferred_viewer == "external") {
+      electron.shell.openExternal(url_to_load);
+    } else {
+      mainWindow.loadURL(url.format(url_to_load));
+    }
   });
 }
 
@@ -223,13 +226,16 @@ ipcMain.on("download", (event, downloadOptions) => {
   downloader.stdout.on("data", data => {
     data = String(data).split("\n");
     console.log(`stdout: ${data}`);
-    for(var i=0; i<data.length; i++){
-      if (data[i].startsWith("Finished for URL")){
-        event.sender.send('downloadOutput', data[i]);
-      }else if(data[i].endsWith("URLS found")){
-        event.sender.send('downloadOutput', data[i]);
-      }else if(data[i].startsWith("It can be found at ")){
-        event.sender.send('downloadOutput', data[i].substr("It can be found at ".length));
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].startsWith("Finished for URL")) {
+        event.sender.send("downloadOutput", data[i]);
+      } else if (data[i].endsWith("URLS found")) {
+        event.sender.send("downloadOutput", data[i]);
+      } else if (data[i].startsWith("It can be found at ")) {
+        event.sender.send(
+          "downloadOutput",
+          data[i].substr("It can be found at ".length)
+        );
       }
     }
   });
