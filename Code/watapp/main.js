@@ -1,6 +1,6 @@
 const electron = require("electron");
 const unzip = require("unzip");
-var DecompressZip = require('decompress-zip');
+var DecompressZip = require("decompress-zip");
 const fs = require("fs");
 const fstream = require("fstream");
 const os = require("os");
@@ -9,8 +9,15 @@ const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 const protocol = electron.protocol;
-const {ipcMain} = require('electron')
-const { spawn } = require('child_process');
+const { ipcMain } = require("electron");
+const { spawn } = require("child_process");
+
+const Store = require("electron-store");
+const store = new Store("userprefs");
+let preferred_viewer = store.get("preferred_viewer");
+if (!preferred_viewer) {
+  preferred_viewer = "internal";
+}
 
 const PROTOCOL_STRING = "watapp://";
 const PROTOCOL_PREFIX = PROTOCOL_STRING.split(":")[0];
@@ -28,10 +35,10 @@ function unzip_wat(file) {
   // fs.createReadStream(file).pipe(unzipper);
   var unzipper = new DecompressZip(file);
   unzipper.extract({
-      path: temp_dest,
-      filter: function (file) {
-          return file.type !== "SymbolicLink";
-      }
+    path: temp_dest,
+    filter: function(file) {
+      return file.type !== "SymbolicLink";
+    }
   });
   console.log(file);
   return unzipper;
@@ -60,47 +67,47 @@ function devToolsLog(s) {
   }
 }
 
-function openWAT(opened_file){
+function openWAT(opened_file) {
   const watfile_path = opened_file.split("/");
   const full_filename = watfile_path[watfile_path.length - 1]; // file.wat
   const filename = full_filename.substr(0, full_filename.indexOf(".wat"));
 
   let unzipper = unzip_wat(opened_file);
-  unzipper.on('error', function (err) {
-    console.log('Caught an error');
+  unzipper.on("error", function(err) {
+    console.log("Caught an error");
     console.log(err);
-});
-  unzipper.on('extract',(e)=>{
+  });
+  unzipper.on("extract", e => {
     var fileLocation;
     console.log(e);
-    if (fs.existsSync(path.join(temp_dest,`${filename}`))) {
-        fileLocation = path.join(temp_dest, `${filename}`);
-    }else{
-        fileLocation = temp_dest;
+    if (fs.existsSync(path.join(temp_dest, `${filename}`))) {
+      fileLocation = path.join(temp_dest, `${filename}`);
+    } else {
+      fileLocation = temp_dest;
     }
     console.log(fileLocation);
     let dest_file = getWatLink(fileLocation);
     console.log(dest_file);
-      mainWindow.loadURL(
-        url.format({
-          pathname: path.join(fileLocation, `${dest_file}`),
-          protocol: "file:",
-          slashes: true
-        })
-      );
-  }
-  );
+
+    mainWindow.loadURL(
+      url.format({
+        pathname: path.join(fileLocation, `${dest_file}`),
+        protocol: "file:",
+        slashes: true
+      })
+    );
+  });
 }
 
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 800, height: 600 });
   // mainWindow.webContents.openDevTools();
-  if(opened_file && opened_file != "."){
+  if (opened_file && opened_file != ".") {
     devToolsLog(opened_file);
-    mainWindow.maximize()
+    mainWindow.maximize();
     openWAT(opened_file);
-  }else{
+  } else {
     mainWindow.loadURL(
       url.format({
         pathname: path.join(__dirname, "index.html"),
@@ -146,7 +153,6 @@ function createWindow() {
     }
   );
 
-
   // Emitted when the window is closed.
   mainWindow.on("closed", function() {
     // Dereference the window object, usually you would store windows
@@ -157,6 +163,7 @@ function createWindow() {
 }
 
 function appReady() {
+  console.log("onReady", preferred_viewer);
   createWindow();
   // unzip_wat(opened_file);
 }
@@ -185,44 +192,59 @@ app.on("activate", function() {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-ipcMain.on('openWAT', (event, file) => {
-  mainWindow.maximize()
+ipcMain.on("openWAT", (event, file) => {
+  if (preferred_viewer == "internal") {
+    mainWindow.maximize();
+  }
   openWAT(file);
-})
+});
 
-ipcMain.on('download', (event, downloadOptions) => {
-  const script = path.join(__dirname, '../CLI', 'wat.py')
-  var optionsArray=[script, '-f', downloadOptions.filename, '-d', downloadOptions.outdir, '-m', downloadOptions.threads]
-  if (downloadOptions.rateLimit){
-    optionsArray.push('--rate-limit=' + downloadOptions.rateLimit)
+ipcMain.on("download", (event, downloadOptions) => {
+  const script = path.join(__dirname, "../CLI", "wat.py");
+  var optionsArray = [
+    script,
+    "-f",
+    downloadOptions.filename,
+    "-d",
+    downloadOptions.outdir,
+    "-m",
+    downloadOptions.threads
+  ];
+  if (downloadOptions.rateLimit) {
+    optionsArray.push("--rate-limit=" + downloadOptions.rateLimit);
   }
-  if(downloadOptions.videos){
-    optionsArray.push('--videos')
+  if (downloadOptions.videos) {
+    optionsArray.push("--videos");
   }
-  event.sender.send('downloadOutput', "Beginning download");
+  event.sender.send("downloadOutput", "Beginning download");
 
-  const downloader = spawn('python', optionsArray);
+  const downloader = spawn("python", optionsArray);
 
-  downloader.stdout.on('data', (data) => {
-    data = String(data).split("\n")
+  downloader.stdout.on("data", data => {
+    data = String(data).split("\n");
     console.log(`stdout: ${data}`);
-    for(var i=0; i<data.length; i++){
-      if (data[i].startsWith("Finished for URL")){
-        event.sender.send('downloadOutput', data[i]);
-      }else if(data[i].endsWith("URLS found")){
-        event.sender.send('downloadOutput', data[i]);
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].startsWith("Finished for URL")) {
+        event.sender.send("downloadOutput", data[i]);
+      } else if (data[i].endsWith("URLS found")) {
+        event.sender.send("downloadOutput", data[i]);
       }
     }
-
   });
 
-  downloader.stderr.on('data', (data) => {
+  downloader.stderr.on("data", data => {
     console.log(`stderr: ${data}`);
   });
 
-    downloader.on('close', (code) => {
-      console.log(`child process exited with code ${code}`);
-      event.sender.send('downloadOutput', `Finished download with code ${code}`);
+  downloader.on("close", code => {
+    console.log(`child process exited with code ${code}`);
+    event.sender.send("downloadOutput", `Finished download with code ${code}`);
+  });
+});
 
-    });
-})
+ipcMain.on("viewer-pref-change", (event, preference) => {
+  if (preferred_viewer !== preference) {
+    preferred_viewer = preference;
+    store.set("preferred_viewer", preference);
+  }
+});
