@@ -223,11 +223,13 @@ ipcMain.on("download", (event, downloadOptions) => {
   downloader.stdout.on("data", data => {
     data = String(data).split("\n");
     console.log(`stdout: ${data}`);
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].startsWith("Finished for URL")) {
-        event.sender.send("downloadOutput", data[i]);
-      } else if (data[i].endsWith("URLS found")) {
-        event.sender.send("downloadOutput", data[i]);
+    for(var i=0; i<data.length; i++){
+      if (data[i].startsWith("Finished for URL")){
+        event.sender.send('downloadOutput', data[i]);
+      }else if(data[i].endsWith("URLS found")){
+        event.sender.send('downloadOutput', data[i]);
+      }else if(data[i].startsWith("It can be found at ")){
+        event.sender.send('downloadOutput', data[i].substr("It can be found at ".length));
       }
     }
   });
