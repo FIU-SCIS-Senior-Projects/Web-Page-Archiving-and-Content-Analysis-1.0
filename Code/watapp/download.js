@@ -33,14 +33,20 @@ document.getElementById('select-outdir').addEventListener('click',()=>{
   },false);
 
   document.getElementById('download').addEventListener('click',()=>{
-      downloadOptions = {
-        filename: document.getElementById('url-file').value,
-        outdir: document.getElementById('outdir').value,
-        rateLimit: document.getElementById('rate-limit').value,
-        videos: document.getElementById('videos').value,
-        threads: document.getElementById('threads').value
+      if(!document.getElementById('url-file').value){
+        alert("Please provide a file with a list of URLs");
+      }else if(!document.getElementById('outdir').value){
+        alert("Please specify an output directory")
+      }else{
+        downloadOptions = {
+          filename: document.getElementById('url-file').value,
+          outdir: document.getElementById('outdir').value,
+          rateLimit: document.getElementById('rate-limit').value,
+          videos: document.getElementById('videos').value,
+          threads: document.getElementById('threads').value
+        }
+        ipcRenderer.send('download', downloadOptions);
       }
-      ipcRenderer.send('download', downloadOptions);
   },false);
 ipcRenderer.on('downloadOutput', (event, output) => {
   //var output = str(output).trim();
