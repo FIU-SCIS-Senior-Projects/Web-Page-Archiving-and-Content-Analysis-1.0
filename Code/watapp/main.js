@@ -110,6 +110,15 @@ function createWindow() {
     devToolsLog(opened_file);
     mainWindow.maximize();
     openWAT(opened_file);
+    if(preferred_viewer=="external"){
+      mainWindow.loadURL(
+        url.format({
+          pathname: path.join(__dirname, "index.html"),
+          protocol: "file:",
+          slashes: true
+        })
+      );
+    }
   } else {
     mainWindow.loadURL(
       url.format({
