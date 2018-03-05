@@ -32,6 +32,10 @@ document.getElementById('select-outdir').addEventListener('click',()=>{
     });
   },false);
 
+document.getElementById('translate').addEventListener('click',()=>{
+  document.getElementById('languages').hidden=!document.getElementById('languages').hidden;
+},false);
+
   document.getElementById('download').addEventListener('click',()=>{
       if(!document.getElementById('url-file').value){
         alert("Please provide a file with a list of URLs");
