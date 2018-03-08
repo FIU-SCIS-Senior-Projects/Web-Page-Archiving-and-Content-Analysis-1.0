@@ -2,6 +2,25 @@ var app = require('electron').remote;
 var dialog = app.dialog;
 const {ipcRenderer} = require('electron');
 
+var to_languages=["English","Russian"];
+var from_languages=["Unknown", "English", "Russian"];
+var to_select=document.getElementById('to');
+var from_select=document.getElementById('from');
+for(var i=0;i<to_languages.length;i++){
+    var option = document.createElement("option");
+    option.value=to_languages[i].toLowerCase()
+    var textnode = document.createTextNode(to_languages[i]);
+    option.appendChild(textnode);
+    to_select.appendChild(option)
+}
+for(var i=0;i<from_languages.length;i++){
+    var option = document.createElement("option");
+    option.value=from_languages[i].toLowerCase()
+    var textnode = document.createTextNode(from_languages[i]);
+    option.appendChild(textnode);
+    from_select.appendChild(option)
+}
+
 document.getElementById('get-url-file').addEventListener('click',()=>{
   dialog.showOpenDialog({
     filters: [
