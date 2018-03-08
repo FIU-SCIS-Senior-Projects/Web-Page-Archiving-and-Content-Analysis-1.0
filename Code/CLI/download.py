@@ -9,12 +9,18 @@ import zipfile
 from html_root_finder import *
 
 def get_domain_name(url):
+	"""
+	Function that takes a url and uses regex to parse out the domain name
+	"""
 	exp = '^(?:https?:\/\/)?(?:[^@\/\n]+@)?(?:www\.)?([^:\/\n]+)'
 	match = re.search(exp, url)
 	if match:
 		return match.group(1)
 
 def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
+	"""
+	Function to take a url and download it as a single wat file
+	"""
 	site_name = get_domain_name(url)
 	timestamp = int(round(time.time() * 10000))
 	dest_name = "{0}_{1}".format(timestamp, site_name)
@@ -63,6 +69,7 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 
 def make_symlink(source_path, link_name):
 	os.symlink(source_path, link_name)
+	
 def make_url_file(source_path,file_loc_name):
 	source_absolute = os.path.abspath(source_path)
 	file_contents = """[InternetShortcut]
@@ -73,6 +80,9 @@ IconIndex=0"""
 	file_loc.close()
 
 def make_wat_file(full_path):
+	"""
+	Function that zips directory and renames it as a wat file
+	"""
 	for file in os.listdir(full_path):
 		if os.path.getmtime(os.path.join(full_path,file))<=315532800:
 			with open(os.path.join(full_path,file), 'a'):

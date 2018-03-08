@@ -3,6 +3,9 @@ import os
 import re
 
 def find_root_html(search_dir):
+    """
+    Uses root node graph theory algorithm to find main html file
+    """
     html_pattern=re.compile("\"(\\S*\.html)\"|'(\\S\.html)'")
 
     files = []
@@ -24,6 +27,9 @@ def find_root_html(search_dir):
             return k
 
 def find_biggest_html(search_dir):
+    """
+    Returns biggest html file in a directory
+    """
     max_file = None
     for file in os.listdir(search_dir):
         if file.endswith(".html"):
@@ -34,6 +40,9 @@ def find_biggest_html(search_dir):
     return max_file
 
 def find_earliest_file(search_dir):
+    """
+    returns oldest file in a directory
+    """
     earliest = None
     for file in os.listdir(search_dir):
         if file.endswith(".html"):
