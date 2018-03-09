@@ -104,7 +104,7 @@ function openWAT(opened_file) {
 
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600 });
+  mainWindow = new BrowserWindow({ width: 1140, height: 800 });
   // mainWindow.webContents.openDevTools();
   if (opened_file && opened_file != ".") {
     devToolsLog(opened_file);
