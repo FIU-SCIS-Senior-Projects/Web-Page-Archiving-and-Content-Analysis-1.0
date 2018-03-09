@@ -2,6 +2,11 @@ var app = require('electron').remote;
 var dialog = app.dialog;
 const {ipcRenderer} = require('electron');
 
+document.getElementById('back-btn').addEventListener('click', (e) => {
+  e.preventDefault();
+  history.back();
+});
+
 document.getElementById('get-url-file').addEventListener('click',()=>{
   dialog.showOpenDialog({
     filters: [
@@ -58,7 +63,7 @@ ipcRenderer.on('downloadOutput', (event, output) => {
   if(output.slice(-4)==".wat"){
     //        ipcRenderer.send("openWAT",output)
     var button=document.createElement("button");
-    button.innerHTML = "Open WAT";
+    button.innerHTML = "Open WAT &rarr;";
     button.addEventListener('click',()=>{
       ipcRenderer.send("openWAT",output);
     })

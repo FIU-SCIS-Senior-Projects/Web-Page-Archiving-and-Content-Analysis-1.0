@@ -1,0 +1,256 @@
+body {
+  font-family: Helvetica, Arial, sans-serif;
+}
+.container {
+  margin: 0 auto;
+  width: 80%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.monospaced {
+  font-family: "Courier New", Courier, monospace;
+}
+
+body.home,
+body.download {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+body.home .main {
+  flex: 1;
+}
+
+body.home .main .container h1 {
+  padding-top: 60px;
+  color: #4a4a4a;
+}
+
+body.home .main .buttons {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+}
+
+body.home .main .buttons button {
+  border: none;
+  cursor: pointer;
+  padding-top: 70px;
+  padding-bottom: 70px;
+  color: white;
+  font-size: 2em;
+  font-weight: bold;
+  border-radius: 5px;
+  box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease-in-out;
+}
+
+body.home .main .buttons button.download {
+  background: #d9177d;
+  margin-bottom: 40px;
+}
+body.home .main .buttons button.download:hover {
+  background: #9c115b;
+}
+
+body.home .main .buttons button.view {
+  background: #8600ff;
+}
+body.home .main .buttons button.view:hover {
+  background: #5a00a8;
+}
+
+body.home .settings {
+  background: #f2f2f2;
+  padding: 30px 0;
+}
+
+body.home .settings h3 {
+  color: #8600ff;
+  margin-top: 0;
+}
+
+body.home .settings .input-group {
+  margin-bottom: 10px;
+}
+
+body.home .settings .input-group label {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #4a4a4a;
+  display: block;
+  margin-bottom: 10px;
+}
+
+body.home .settings .input-group #preferred-viewer-mnt {
+  display: inline-block;
+  border-bottom: 1px solid #4a4a4a;
+  font-family: "Courier New", Courier, monospace;
+  margin-top: 4px;
+  position: relative;
+}
+
+body.home .settings .input-group #preferred-viewer-mnt:after {
+  content: "▼";
+  font-size: 0.75em;
+  margin-right: 4px;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+body.home .settings .input-group select {
+  border: none;
+  font-size: 0.85em;
+  border-radius: 0;
+  background: none;
+  -webkit-appearance: none;
+  padding: 4px 24px 4px 4px;
+}
+
+body.download .nav {
+  padding: 12px 0;
+}
+
+body.download .nav a {
+  color: #8600ff;
+  line-height: 1em;
+  display: inline-block;
+  padding: 14px 4px;
+  max-width: 150px;
+  text-decoration: none;
+}
+
+body.download .main {
+  flex: 1 1 65%;
+}
+
+body.download .main h1 {
+  color: #4a4a4a;
+  margin-top: 0;
+}
+
+body.download .output-wrap {
+  background: #f2f2f2;
+  padding: 20px 0;
+  max-height: 40%;
+  flex: 1 1 35%;
+  overflow-y: scroll;
+}
+
+body.download .output-wrap #output {
+  color: #4a4a4a;
+  font-family: "Courier New", Courier, monospace;
+}
+
+body.download .output-wrap h3 {
+  color: #4a4a4a;
+}
+
+.pr-4 {
+  padding-right: 56px;
+}
+
+.input-group {
+  margin-bottom: 36px;
+}
+
+.input-group label {
+  font-weight: bold;
+  color: #4a4a4a;
+  font-size: 0.9em;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.input-group .input-button-group {
+  display: flex;
+}
+
+.input-group .input-button-group input {
+  font-family: "Courier New", Courier, monospace;
+  padding: 6px 6px;
+  margin-right: 4px;
+  flex: 1;
+  border: none;
+  font-size: 0.8em;
+  border-bottom: 1px solid #4a4a4a;
+}
+.input-group .input-button-group button {
+  border: none;
+  cursor: pointer;
+  padding: 8px 20px;
+  background: #414141;
+  font-size: 0.8em;
+  color: white;
+  font-weight: normal;
+  border-radius: 3px;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease-in-out;
+}
+.input-group .input-button-group button:hover {
+  background: #5a5a5a;
+}
+
+.input-group input {
+  font-family: "Courier New", Courier, monospace;
+  padding: 6px 6px;
+  margin-right: 4px;
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid #4a4a4a;
+}
+
+body.download .translate-section .input-group select {
+  border: none;
+  font-size: 0.85em;
+  border-radius: 0;
+  background: none;
+  -webkit-appearance: none;
+  padding: 4px 24px 4px 4px;
+  border-bottom: 1px solid #4a4a4a;
+}
+body.download #output p {
+  margin-bottom: 4px;
+}
+
+body.download #output button{
+  display: inline-block;
+    border: none;
+    background: none;
+    color: purple;
+    text-decoration: underline;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+body.download .main .download-btn {
+  display: inline-block;
+  background: #8600ff;
+  border: none;
+  cursor: pointer;
+  padding: 12px 40px;
+  font-size: 0.9em;
+  color: white;
+  font-weight: normal;
+  border-radius: 3px;
+  box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease-in-out;
+}
+body.download .main .download-btn:hover {
+  background: #9500ff;
+}
+
+.col-wrap {
+  display: flex;
+}
+.col {
+  flex: 1 1 50%;
+}

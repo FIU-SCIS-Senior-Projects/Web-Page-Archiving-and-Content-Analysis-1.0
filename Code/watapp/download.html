@@ -1,33 +1,103 @@
 <!DOCTYPE html>
 <html>
 
-<body>
-  <h1>Select download options</h1>
-  <input type="text" placeholder="Please select a file" id="url-file" disabled="disabled"/>
-  <input type="button" value="Choose a file of URLS" id="get-url-file"/></br>
-  <input type="text" placeholder="Please select a directory" id="outdir" disabled="disabled"/>
-  <input type="button" value="Select output directory" id="select-outdir"/></br>
-  Rate limit (empty if none): <input type="text" name="limit" id="rate-limit"></br>
-  Include videos: <input type="checkbox" id="videos"></br>
-  Number of threads: <input type="number" id="threads" value=1 min=1></br>
-  Translate on download: <input type="checkbox" id="translate"></br>
-  <div hidden id="languages">
-    From: <select id="from">
-     <option value="unknown">Unknown</option>
-     <option value="english">English</option>
-     <option value="russian">Russian</option>
-    </select>
-    To: <select id="to">
-     <option value="english">English</option>
-     <option value="russian">Russian</option>
-   </select>
-  </div></br>
-  <input type="submit" value="Download" id="download"></br>
-  <div id="output"></div>
+<head>
+  <link rel="stylesheet" href="assets/normalize.css">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body class="download">
+  <div class="nav">
+    <div class="container">
+      <a id="back-btn" href="#">&larr; &nbsp;Go Back</a>
+    </div>
+  </div>
+  <div class="main">
+    <div class="container">
+      <h1>Download Options</h1>
+      <div class="inputs col-wrap">
+        <div class="col pr-4">
+          <div class="input-group">
+            <label for="url-file">Input URLs</label>
+            <div class="input-button-group">
+              <input type="text" placeholder="Choose a file of URLs to download" id="url-file" disabled="disabled" />
+              <button id="get-url-file">Select file</button>
+            </div>
+          </div>
+          <div class="col-wrap">
+            <div class="col pr-4">
+              <div class="input-group">
+                <label for="rate-limit">Rate limit kb/ps (optional):</label>
+                <input placeholder="50k" type="text" name="limit" id="rate-limit">
+              </div>
+            </div>
+            <div class="col">
+              <div class="input-group">
+                <label for="threads">Number of threads:</label>
+                <input type="number" id="threads" value=1 min=1>
+              </div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="checkbox" for="videos">
+              <input type="checkbox" id="videos"> Include videos</label>
+          </div>
+        </div>
+        <div class="col">
+          <div class="input-group">
+            <label for="outdir">Output Directory</label>
+            <div class="input-button-group">
+              <input type="text" placeholder="Please select a directory" id="outdir" disabled="disabled" />
+              <button id="select-outdir">Select Output</button>
+            </div>
+          </div>
+          <div class="translate-section">
+            <div class="input-group">
+              <label for="translate">
+                <input type="checkbox" id="translate"> Translate on Download
+              </label>
+              <br>
+              <div hidden id="languages">
+                <div class="col-wrap">
+                  <div class="col">
+                    <label for="from">From:</label>
+                    <select id="from">
+                      <option value="unknown">Unknown</option>
+                      <option value="english">English</option>
+                      <option value="russian">Russian</option>
+                    </select>
+                  </div>
+                  <div class="col">
+                    <label for="to">To:</label>
+                    <select id="to">
+                      <option value="english">English</option>
+                      <option value="russian">Russian</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <button class="download-btn" id="download">Start download</button>
+      </div>
+    </div>
+  </div>
+  <div class="output-wrap">
+    <div class="container">
+      <h3>Output</h3>
+      <div id="output">
+      </div>
+    </div>
+  </div>
+
   <script>
     // You can also require other files to run in this process
     require('./renderer.js')
     require('./download.js')
   </script>
 </body>
+
 </html>

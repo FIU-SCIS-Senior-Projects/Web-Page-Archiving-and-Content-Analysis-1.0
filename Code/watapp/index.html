@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>WAT: Web Analysis Tool</title>
-    <style>
-        .container{
-            text-align: center;
-        }
-        .buttons{
-          display: flex;
-          margin: 0 auto;
-          width: 100%;
-          justify-content: space-around;
-        }
-    </style>
-  </head>
-  <body>
+
+<head>
+  <meta charset="UTF-8">
+  <title>WAT: Web Analysis Tool</title>
+  <link rel="stylesheet" href="assets/normalize.css">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body class="home">
+  <div class="main">
     <div class="container">
-      <h1>WAT: Web Analysis Tool</h1>
+      <h1>I would like to...</h1>
 
       <div class="buttons">
-        <button onclick="window.location.href='download.html'">Download</button>
-        <input type="button" value="Choose a file" id="view-wat"/>
+        <button class="download" onclick="window.location.href='download.html'">Download a new set of pages</button>
+        <button class="view" id="view-wat">Chose a .wat file to open</button>
       </div>
-      <hr>
-      <div>
-        <h4>Preferred .wat File Viewer:</h4>
+    </div>
+  </div>
+  <div class="settings">
+    <div class="container">
+      <h3>Settings</h3>
+      <div class="input-group">
+        <label>Open .wat files with:</label>
         <div id="preferred-viewer-mnt">
         </div>
       </div>
     </div>
+  </div>
 
-    <script>
-      // You can also require other files to run in this process
-      require('./renderer.js')
-      require('./viewerDialog.js')
-    </script>
-  </body>
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+    require('./viewerDialog.js')
+  </script>
+</body>
+
 </html>

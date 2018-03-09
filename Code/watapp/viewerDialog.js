@@ -54,7 +54,7 @@ const getPrefMarkup = (selected = "internal") => {
   const pref_markup = `
     <select id="pref-viewer-select">
       <option ${selected === "internal" ? "selected" : ""} value="internal">WATViewer App</option>
-      <option ${selected === "external" ? "selected" : ""} value="external">User's default browser</option>
+      <option ${selected === "external" ? "selected" : ""} value="external">My default browser</option>
     </select>
   `;
 

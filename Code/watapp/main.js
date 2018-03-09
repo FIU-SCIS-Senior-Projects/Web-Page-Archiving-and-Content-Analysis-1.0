@@ -212,7 +212,8 @@ ipcMain.on("openWAT", (event, file) => {
 });
 
 ipcMain.on("download", (event, downloadOptions) => {
-  const script = path.join(process.resourcesPath, "CLI", "wat.py");
+  // const script = path.join(process.resourcesPath, "CLI", "wat.py");
+  const script = path.join("../", "CLI", "wat.py");
   var optionsArray = [
     script,
     "-f",
