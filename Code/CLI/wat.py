@@ -5,6 +5,7 @@ import sys
 from download import download_url
 
 def main():
+	#add command line arguments
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-f", "--file", help="File containing list of URLs", type=file,  required=True)
 	parser.add_argument("-d", "--outdir", help="Output directory", type=str)
@@ -18,7 +19,7 @@ def main():
 
 	args = parser.parse_args()
 
-
+	# Parse file and args
 	destpath = args.outdir
 	videos = args.videos
 	line = args.file.readline()
@@ -29,6 +30,8 @@ def main():
 		line = args.file.readline()
 	print str(len(URLS)) + " URLS found"
 	sys.stdout.flush()
+
+	# run downloads in thread pool executor
 	num_threads=args.threads
 	with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
 		future_to_url = {executor.submit(download_url,URLS[i], destpath, videos, i, args.rate_limit): i for i in range(0,len(URLS))}
