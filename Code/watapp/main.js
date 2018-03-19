@@ -27,7 +27,7 @@ const url = require("url");
 
 let opened_file = process.argv[1];
 
-const temp_dest = os.tmpdir();
+const temp_dest = path.join(os.tmpdir(),'Web Archive');
 
 function unzip_wat(file) {
   devToolsLog(temp_dest);
@@ -171,6 +171,17 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+    if (fs.existsSync(temp_dest)) {
+      fs.readdirSync(temp_dest).forEach(function(file, index){
+        var curPath = path.join(temp_dest, file);
+        if (fs.lstatSync(curPath).isDirectory()) { // recurse
+          deleteFolderRecursive(curPath);
+        } else { // delete file
+          fs.unlinkSync(curPath);
+        }
+      });
+    }
+    fs.rmdirSync(temp_dest);
   });
 }
 
