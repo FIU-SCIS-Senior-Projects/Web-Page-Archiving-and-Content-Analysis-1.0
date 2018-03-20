@@ -85,6 +85,7 @@ class MetadataExtractor:
         self.save_first(publisher_methods,"header")
 
     def extract_data_from_html(self, file_name):
+        self.data={}
         with open(file_name) as fp:
             self.article = BeautifulSoup(fp, 'html.parser')
         self.get_date()
@@ -95,6 +96,7 @@ class MetadataExtractor:
         return self.data
 
     def extract_data_from_wat(self,wat_file):
+        self.data={}
         dirpath = os.path.join(tempfile.mkdtemp(),"extraction")
 
         archive = zipfile.ZipFile(wat_file)
