@@ -8,7 +8,7 @@ m = MetadataExtractor()
 # print m.extract_data_from_wat(wat_file)
 # print m.extract_data_from_html(html_file)
 #
-dir_name="../Reference Work/example_output"
+dir_name="../Reference Work/"
 f = open('test.csv','w')
 mydict={
     "date":"",
@@ -32,7 +32,7 @@ for folder, subs, files in os.walk(dir_name):
             elif filename.endswith(".html"):
                 d = m.extract_data_from_html(os.path.join(folder,filename))
                 if not ("date" in d and "title" in d and "header" in d and "publisher" in d and "author" in d):
-                    print filename
+                    print os.path.join(folder,filename)
                 if not d == {} and not d["title"] == "ns":
                     w.writerow(d)
                 continue
