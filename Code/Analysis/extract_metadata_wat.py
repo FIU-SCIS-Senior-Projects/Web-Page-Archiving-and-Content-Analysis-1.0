@@ -15,7 +15,8 @@ mydict={
     "author":"",
     "header":"",
     "publisher":"",
-    "title":""
+    "title":"",
+    "fileLocation":""
 }
 w = csv.DictWriter(f,mydict.keys())
 w.writeheader()
@@ -27,6 +28,7 @@ for folder, subs, files in os.walk(dir_name):
                 if not ("date" in d and "title" in d and "header" in d and "publisher" in d and "author" in d):
                     print filename
                 if not date == {}:
+                    d["fileLocation"]=os.path.join(folder,filename)
                     w.writerow(d)
                 continue
             elif filename.endswith(".html"):
@@ -34,6 +36,7 @@ for folder, subs, files in os.walk(dir_name):
                 if not ("date" in d and "title" in d and "header" in d and "publisher" in d and "author" in d):
                     print os.path.join(folder,filename)
                 if not d == {} and not d["title"] == "ns":
+                    d["fileLocation"]=os.path.join(folder,filename)
                     w.writerow(d)
                 continue
             else:
