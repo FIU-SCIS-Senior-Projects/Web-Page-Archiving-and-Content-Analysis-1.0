@@ -4,6 +4,7 @@ import tempfile
 import shutil
 import os
 import re
+import json
 # "/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196120301161_theverge.com/amazon-echo-google-home-nsa-voice-surveillance.html"
 
 class MetadataExtractor:
@@ -46,10 +47,10 @@ class MetadataExtractor:
 
     def get_author(self):
         author_methods=[
+            lambda: self.article.find("meta", attrs={'name':'author'}).get("content", None),
             lambda: self.article.find("meta",  property="author")["content"],
             lambda: self.article.find("meta",  property="article:author")["content"],
             lambda: self.article.find("meta", attrs={'name':'sailthru.author'}).get("content", None),
-            lambda: self.article.find("meta", attrs={'name':'author'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'dc.creator'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'DC.creator'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'dc.contributor'}).get("content", None),
@@ -117,6 +118,8 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'itemprop':'dateModified'}).get("value", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("value", None),
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["datePublished"],
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["dateModified"],
         ]
         self.save_first(date_methods,"date")
 
