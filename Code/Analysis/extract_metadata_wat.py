@@ -16,7 +16,8 @@ mydict={
     "header":"",
     "publisher":"",
     "title":"",
-    "fileLocation":""
+    "fileLocation":"",
+    "publisherOrigin":""
 }
 w = csv.DictWriter(f,mydict.keys())
 w.writeheader()
