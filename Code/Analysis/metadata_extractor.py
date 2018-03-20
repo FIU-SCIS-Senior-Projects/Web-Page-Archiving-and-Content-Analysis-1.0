@@ -3,6 +3,7 @@ import zipfile
 import tempfile
 import shutil
 import os
+import re
 # "/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196120301161_theverge.com/amazon-echo-google-home-nsa-voice-surveillance.html"
 
 class MetadataExtractor:
@@ -106,6 +107,16 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'mediator_published_time'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'publish_date'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'publish_date'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'lastmod'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'lastmod'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'pubdate'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'pubdate'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'dateModified'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'dateModified'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("value", None),
         ]
         self.save_first(date_methods,"date")
 
@@ -137,7 +148,7 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'cre'} ).get("value", None),
             lambda: self.article.find("meta",  property="article:publisher")["content"],
             lambda: self.article.find("meta",  property="publisher")["content"],
-            lambda: self.article.find("meta", attrs={'name':'twitter:site'} ).get("content", None),
+            lambda: re.sub('@', '', self.article.find("meta", attrs={'name':'twitter:site'} ).get("content", None)),
             lambda: self.article.find("meta", attrs={'name':'sailthru.description'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'dc.publisher'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'DC.publisher'}).get("content", None),
