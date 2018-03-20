@@ -165,6 +165,12 @@ class MetadataExtractor:
         ]
         self.save_first(publisher_methods,"publisher")
 
+    def get_publisher_origin(self):
+        publisher_origin_methods=[
+            lambda: self.article.find("meta",  property="og:locale")["content"],
+        ]
+        self.save_first(publisher_origin_methods,"publisherOrigin")
+
     def extract_data_from_html(self, file_name):
         self.data={}
         with open(file_name) as fp:
@@ -174,6 +180,7 @@ class MetadataExtractor:
         self.get_author()
         self.get_publisher()
         self.get_header()
+        self.get_publisher_origin()
         return self.data
 
     def extract_data_from_wat(self,wat_file):
