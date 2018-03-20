@@ -1,4 +1,8 @@
 from bs4 import BeautifulSoup
+import zipfile
+import tempfile
+import shutil
+import os
 # "/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196120301161_theverge.com/amazon-echo-google-home-nsa-voice-surveillance.html"
 
 class MetadataExtractor:
@@ -80,7 +84,7 @@ class MetadataExtractor:
         ]
         self.save_first(publisher_methods,"header")
 
-    def extract_data(self, file_name):
+    def extract_data_from_html(self, file_name):
         with open(file_name) as fp:
             self.article = BeautifulSoup(fp, 'html.parser')
         self.get_date()
@@ -89,3 +93,15 @@ class MetadataExtractor:
         self.get_publisher()
         self.get_header()
         return self.data
+
+    def extract_data_from_wat(self,wat_file):
+        dirpath = os.path.join(tempfile.mkdtemp(),"extraction")
+
+        archive = zipfile.ZipFile(wat_file)
+        archive.extract("wat_link.txt", dirpath)
+        with open(os.path.join(dirpath,"wat_link.txt")) as f:
+            file = f.readline()
+        archive.extract(file,dirpath)
+        data= self.extract_data_from_html(os.path.join(dirpath,file))
+        shutil.rmtree(dirpath)
+        return data
