@@ -27,21 +27,21 @@ class MetadataExtractor:
 
     def get_title(self):
         title_methods=[
-        lambda: self.article.find("meta",  property="og:title")["content"],
-        lambda: self.article.title.string,
-        lambda: self.article.find("meta", attrs={'name':'twitter:title'} ).get("content", None),
-        lambda: self.article.find("meta", attrs={'name':'sailthru.title'}).get("content", None),
-        lambda: self.article.find("meta", attrs={'name':'dc.title'}).get("content", None),
-        lambda: self.article.find("meta", attrs={'name':'DC.title'}).get("content", None),
-        lambda: self.article.find("meta", attrs={'name':'title'}).get("content", None),
-        lambda: self.article.find("meta",  property="og:title")["content"],
-        lambda: self.article.find("meta", attrs={'name':'twitter:title'} ).get("value", None),
-        lambda: self.article.find("meta", attrs={'name':'sailthru.title'}).get("value", None),
-        lambda: self.article.find("meta", attrs={'name':'dc.title'}).get("value", None),
-        lambda: self.article.find("meta", attrs={'name':'DC.title'}).get("value", None),
-        lambda: self.article.find("meta", attrs={'name':'title'}).get("value", None),
-        lambda: self.article.find("meta", attrs={'name':'mrc__share_title'} ).get("value", None),
-        lambda: self.article.find("meta", attrs={'name':'mrc__share_title'} ).get("content", None),
+            lambda: self.article.find("meta",  property="og:title")["content"],
+            lambda: self.article.title.string,
+            lambda: self.article.find("meta", attrs={'name':'twitter:title'} ).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'sailthru.title'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'dc.title'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'DC.title'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'title'}).get("content", None),
+            lambda: self.article.find("meta",  property="og:title")["content"],
+            lambda: self.article.find("meta", attrs={'name':'twitter:title'} ).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'sailthru.title'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'dc.title'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'DC.title'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'title'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'mrc__share_title'} ).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'mrc__share_title'} ).get("content", None),
         ]
         self.save_first(title_methods,"title")
 
