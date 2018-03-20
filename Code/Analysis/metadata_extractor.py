@@ -16,8 +16,10 @@ class MetadataExtractor:
             try:
                 val = method()
                 if val:
-                    self.data[prop] = val
+                    self.data[prop] = val.encode('utf-8')
                     break
+                else:
+                    self.data[prop]= None
             except Exception as e:
                 continue
 
@@ -130,9 +132,11 @@ class MetadataExtractor:
 
     def get_publisher(self):
         publisher_methods=[
+            lambda: self.article.find("meta",  property="og:site_name")["content"],
+            lambda: self.article.find("meta", attrs={'name':'cre'} ).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'cre'} ).get("value", None),
             lambda: self.article.find("meta",  property="article:publisher")["content"],
             lambda: self.article.find("meta",  property="publisher")["content"],
-            lambda: self.article.find("meta",  property="og:site_name")["content"],
             lambda: self.article.find("meta", attrs={'name':'twitter:site'} ).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'sailthru.description'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'dc.publisher'}).get("content", None),
