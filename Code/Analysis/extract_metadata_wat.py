@@ -11,13 +11,16 @@ m = MetadataExtractor()
 dir_name="../Reference Work/"
 f = open('test.csv','w')
 mydict={
-    "date":"",
+    "publishedDate":"",
+    "createdDate":"",
+    "modifiedDate":"",
     "author":"",
     "header":"",
     "publisher":"",
     "title":"",
     "fileLocation":"",
-    "publisherOrigin":""
+    "publisherOrigin":"",
+    "language":""
 }
 w = csv.DictWriter(f,mydict.keys())
 w.writeheader()

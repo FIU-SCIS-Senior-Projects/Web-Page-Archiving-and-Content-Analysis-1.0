@@ -70,13 +70,11 @@ class MetadataExtractor:
         ]
         self.save_first(author_methods,"author")
 
-    def get_date(self):
+    def get_published_date(self):
         date_methods=[
             lambda: self.article.find("meta",  property="date")["content"],
             lambda: self.article.find("meta",  property="article:published_time")["content"],
-            lambda: self.article.find("meta",  property="article:modified_time")["content"],
             lambda: self.article.find("meta",  property="article:published")["content"],
-            lambda: self.article.find("meta",  property="article:modified")["content"],
             lambda: self.article.find("meta", attrs={'name':'sailthru.date'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'dc.date'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'dc.date.issued'}).get("content", None),
@@ -84,14 +82,11 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'DC.date.issued'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'date'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'ptime'}).get("content", None),
-            lambda: self.article.find("meta", attrs={'name':'utime'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'pdate'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'DISPLAYDATE'}).get("content", None),
             lambda: self.article.find("meta",  property="date")["value"],
             lambda: self.article.find("meta",  property="article:published_time")["value"],
-            lambda: self.article.find("meta",  property="article:modified_time")["value"],
             lambda: self.article.find("meta",  property="article:published")["value"],
-            lambda: self.article.find("meta",  property="article:modified")["value"],
             lambda: self.article.find("meta", attrs={'name':'sailthru.date'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'dc.date'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'dc.date.issued'}).get("value", None),
@@ -99,7 +94,6 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'DC.date.issued'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'date'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'ptime'}).get("value", None),
-            lambda: self.article.find("meta", attrs={'name':'utime'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'pdate'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'DISPLAYDATE'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'published_time_telegram'}).get("value", None),
@@ -108,20 +102,37 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'mediator_published_time'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'publish_date'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'publish_date'}).get("content", None),
-            lambda: self.article.find("meta", attrs={'name':'lastmod'}).get("content", None),
-            lambda: self.article.find("meta", attrs={'name':'lastmod'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'pubdate'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'pubdate'}).get("value", None),
             lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("value", None),
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["datePublished"],
+        ]
+        self.save_first(date_methods,"publishedDate")
+
+    def get_modified_date(self):
+        date_methods=[
+            lambda: self.article.find("meta",  property="article:modified_time")["content"],
+            lambda: self.article.find("meta",  property="article:modified")["content"],
+            lambda: self.article.find("meta", attrs={'name':'utime'}).get("content", None),
+            lambda: self.article.find("meta",  property="article:modified_time")["value"],
+            lambda: self.article.find("meta",  property="article:modified")["value"],
+            lambda: self.article.find("meta", attrs={'name':'utime'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'lastmod'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'lastmod'}).get("value", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateModified'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateModified'}).get("value", None),
-            lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("content", None),
-            lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("value", None),
-            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["datePublished"],
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["dateModified"],
         ]
-        self.save_first(date_methods,"date")
+        self.save_first(date_methods,"modifiedDate")
+
+    def get_created_date(self):
+        date_methods=[
+            lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("value", None),
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["dateCreated"],
+        ]
+        self.save_first(date_methods,"createdDate")
 
     def get_header(self):
         header_methods=[
@@ -167,20 +178,37 @@ class MetadataExtractor:
 
     def get_publisher_origin(self):
         publisher_origin_methods=[
-            lambda: self.article.find("meta",  property="og:locale")["content"],
+            lambda: self.article.find("meta", attrs={'name':'sailthru.location'}).get("content", None),
+
         ]
         self.save_first(publisher_origin_methods,"publisherOrigin")
+
+    def get_language(self):
+        language_methods=[
+            lambda: self.article.find("meta",  property="og:locale")["content"],
+            lambda: self.article.find("meta", attrs={'name':'DC.language'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'language'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'lang'}).get("content", None),
+            lambda: self.article.find("meta",  property="language")["content"],
+            lambda: self.article.find("meta",  property="lang")["content"],
+
+        ]
+        self.save_first(language_methods,"language")
+
 
     def extract_data_from_html(self, file_name):
         self.data={}
         with open(file_name) as fp:
             self.article = BeautifulSoup(fp, 'html.parser')
-        self.get_date()
+        self.get_published_date()
+        self.get_modified_date()
+        self.get_created_date()
         self.get_title()
         self.get_author()
         self.get_publisher()
         self.get_header()
         self.get_publisher_origin()
+        self.get_language()
         return self.data
 
     def extract_data_from_wat(self,wat_file):
