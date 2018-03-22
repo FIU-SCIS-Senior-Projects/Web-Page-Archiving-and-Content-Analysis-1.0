@@ -195,6 +195,23 @@ class MetadataExtractor:
         ]
         self.save_first(language_methods,"language")
 
+    def get_url(self):
+        url_methods=[
+            lambda: self.article.find("meta",  property="og:url")["content"],
+            lambda: self.article.find("meta", attrs={'name':'twitter:url'} ).get("content", None),
+            lambda: self.article.find("meta",  property="og:url")["value"],
+            lambda: self.article.find("meta", attrs={'name':'twitter:url'} ).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'analyticsAttributes.canonicalUrl'} ).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'analyticsAttributes.canonicalUrl'} ).get("content", None),
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["url"],
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["mainEntityOfPage"]["@id"],
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["mainEntityOfPage"],
+            lambda: self.article.find("link", attrs={'rel':'amphtml'} ).get("href", None),
+            lambda: self.article.find("link", attrs={'rel':'canonical'} ).get("href", None),
+
+        ]
+        self.save_first(url_methods,"url")
+
 
     def extract_data_from_html(self, file_name):
         self.data={}
@@ -209,6 +226,7 @@ class MetadataExtractor:
         self.get_header()
         self.get_publisher_origin()
         self.get_language()
+        self.get_url()
         return self.data
 
     def extract_data_from_wat(self,wat_file):
