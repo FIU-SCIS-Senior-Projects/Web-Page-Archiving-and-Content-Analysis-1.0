@@ -1,6 +1,7 @@
 from metadata_extractor import MetadataExtractor
 import os
 import csv
+from dicttoxml import dicttoxml
 # wat_file="/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196120301161_theverge.com.wat"
 # html_file="/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196989105181_tass.com_2/988157.html"
 
@@ -20,31 +21,35 @@ mydict={
     "title":"",
     "fileLocation":"",
     "publisherOrigin":"",
-    "language":""
+    "language":"",
+    "url":""
 }
 w = csv.DictWriter(f,mydict.keys())
 w.writeheader()
-
+a=[]
 for folder, subs, files in os.walk(dir_name):
         for filename in files:
             if filename.endswith(".wat"):
                 d = m.extract_data_from_wat(os.path.join(foler,filename))
                 if not ("date" in d and "title" in d and "header" in d and "publisher" in d and "author" in d):
                     print filename
-                if not date == {}:
+                if not date == {} and d["title"]:
                     d["fileLocation"]=os.path.join(folder,filename)
+                    a.append(d)
                     w.writerow(d)
                 continue
             elif filename.endswith(".html"):
                 d = m.extract_data_from_html(os.path.join(folder,filename))
                 if not ("date" in d and "title" in d and "header" in d and "publisher" in d and "author" in d):
                     print os.path.join(folder,filename)
-                if not d == {} and not d["title"] == "ns":
+                if not d == {} and d["title"] and d["title"]!="ns" and d["title"]!="Facebook" and d["title"]!="IFrame" and d["title"]!="Widget Preview" and d["title"]!="Testing Javascript Widget":
                     d["fileLocation"]=os.path.join(folder,filename)
+                    a.append(d)
                     w.writerow(d)
                 continue
             else:
                 continue
+
 
 # for filename in os.listdir(dir_name):
 #     if filename.endswith(".wat"):
@@ -56,3 +61,7 @@ for folder, subs, files in os.walk(dir_name):
 #     else:
 #         continue
 f.close()
+xml = dicttoxml(a, attr_type=False)
+f = open('test.xml','w')
+f.write(xml)
+f.close
