@@ -92,15 +92,29 @@ ipcRenderer.on('downloadOutput', (event, output) => {
     console.log(output);
     var a = output.split(" ");
     var num = Number(a[a.length-3]);
-    var ul=document.createElement("ul");
+    var ol=document.createElement("ol");
 
     for(var i =0; i < num; i++){
       var li=document.createElement("li");
+      var span=document.createElement("span");
+      span.id="downloading-" + i
+      span.innerHTML="..."
       li.id="url-li-"+i;
-      li.innerHTML=i+1 + " Downloading...";
-      ul.appendChild(li)
+      li.innerHTML="Downloading";
+      li.appendChild(span)
+      ol.appendChild(li)
+
     }
-    document.getElementById('output').appendChild(ul);
+    var dots = window.setInterval( function() {
+      var spans = document.getElementsByTagName('span');
+      for(var i = 0; i<spans.length; i++){
+        if ( spans[i].innerHTML.length > 2 )
+            spans[i].innerHTML = "";
+        else
+            spans[i].innerHTML += ".";
+      }
+    }, 200);
+    document.getElementById('output').appendChild(ol);
   }else if(output.startsWith("Finished for URL")){
     console.log(output);
     a = output.split(" ");
