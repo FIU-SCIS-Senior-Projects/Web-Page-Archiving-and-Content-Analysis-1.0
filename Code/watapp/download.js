@@ -85,7 +85,7 @@ ipcRenderer.on('downloadOutput', (event, output) => {
     var button=document.createElement("button");
     button.innerHTML = "Open WAT &rarr;";
     button.addEventListener('click',()=>{
-      ipcRenderer.send("openWAT",output.slice(output.indexOf(" ")));
+      ipcRenderer.send("openWAT",output.slice(output.indexOf(" ") + 1));
     })
     document.getElementById("url-li-"+urlNum).appendChild(button);
   }else if(output.endsWith("URLS found")){
