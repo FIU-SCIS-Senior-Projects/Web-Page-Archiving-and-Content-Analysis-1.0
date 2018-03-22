@@ -31,8 +31,6 @@ for folder, subs, files in os.walk(dir_name):
         for filename in files:
             if filename.endswith(".wat"):
                 d = m.extract_data_from_wat(os.path.join(foler,filename))
-                if not ("date" in d and "title" in d and "header" in d and "publisher" in d and "author" in d):
-                    print filename
                 if not date == {} and d["title"]:
                     d["fileLocation"]=os.path.join(folder,filename)
                     a.append(d)
@@ -40,8 +38,6 @@ for folder, subs, files in os.walk(dir_name):
                 continue
             elif filename.endswith(".html"):
                 d = m.extract_data_from_html(os.path.join(folder,filename))
-                if not ("date" in d and "title" in d and "header" in d and "publisher" in d and "author" in d):
-                    print os.path.join(folder,filename)
                 if not d == {} and d["title"] and d["title"]!="ns" and d["title"]!="Facebook" and d["title"]!="IFrame" and d["title"]!="Widget Preview" and d["title"]!="Testing Javascript Widget":
                     d["fileLocation"]=os.path.join(folder,filename)
                     a.append(d)
