@@ -40,7 +40,7 @@ def main():
 			try:
 				data = future.result()
 				print "Finished for URL #" + str(i) + ": " + URLS[i]
-				print "It can be found at " + str(data)
+				print "URL #" + str(i) + ": " + URLS[i] + " can be found at " + str(data)
 				sys.stdout.flush()
 			except Exception as exc:
 				print('%r generated an exception: %s' % (url, exc))

@@ -223,8 +223,8 @@ ipcMain.on("openWAT", (event, file) => {
 });
 
 ipcMain.on("download", (event, downloadOptions) => {
-  const script = path.join(process.resourcesPath, "CLI", "wat.py");
-  // const script = path.join("../", "CLI", "wat.py");
+  // const script = path.join(process.resourcesPath, "CLI", "wat.py");
+  const script = path.join("../", "CLI", "wat.py");
   var optionsArray = [
     script,
     "-f",
@@ -252,10 +252,10 @@ ipcMain.on("download", (event, downloadOptions) => {
         event.sender.send("downloadOutput", data[i]);
       } else if (data[i].endsWith("URLS found")) {
         event.sender.send("downloadOutput", data[i]);
-      } else if (data[i].startsWith("It can be found at ")) {
+      } else if (data[i].includes("can be found at ")) {
         event.sender.send(
           "downloadOutput",
-          data[i].substr("It can be found at ".length)
+          data[i].slice(data[i].indexOf("#")+1, data[i].indexOf(":")) + " " + data[i].substr(data[i].indexOf("can be found at ")+ "can be found at ".length)
         );
       }
     }
