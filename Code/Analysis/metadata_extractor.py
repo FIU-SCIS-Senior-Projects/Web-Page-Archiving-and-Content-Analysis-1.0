@@ -27,6 +27,7 @@ class MetadataExtractor:
 
     def get_title(self):
         title_methods=[
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["headline"],
             lambda: self.article.find("meta",  property="og:title")["content"],
             lambda: self.article.title.string,
             lambda: self.article.find("meta", attrs={'name':'twitter:title'} ).get("content", None),
@@ -47,7 +48,10 @@ class MetadataExtractor:
 
     def get_author(self):
         author_methods=[
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["author"]["name"],
             lambda: self.article.find("meta", attrs={'name':'author'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'Author'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'Author'}).get("value", None),
             lambda: self.article.find("meta",  property="author")["content"],
             lambda: self.article.find("meta",  property="article:author")["content"],
             lambda: self.article.find("meta", attrs={'name':'sailthru.author'}).get("content", None),
@@ -67,6 +71,11 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'twitter:creator'} ).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'mediator_author'} ).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'mediator_author'} ).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'analyticsAttributes.author'} ).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'analyticsAttributes.author'} ).get("content", None),
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["creator"][0],
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["creator"],
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["author"],
         ]
         self.save_first(author_methods,"author")
 
@@ -104,6 +113,8 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'publish_date'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'pubdate'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'pubdate'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'name':'analyticsAttributes.articleDate'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'name':'analyticsAttributes.articleDate'}).get("value", None),
             lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("value", None),
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["datePublished"],
@@ -122,6 +133,8 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'lastmod'}).get("value", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateModified'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateModified'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'REVISION_DATE'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'REVISION_DATE'}).get("value", None),
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["dateModified"],
         ]
         self.save_first(date_methods,"modifiedDate")
@@ -152,11 +165,14 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'DC.description'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'mrc__share_description'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'mrc__share_description'}).get("value", None),
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["description"],
+
         ]
         self.save_first(header_methods,"header")
 
     def get_publisher(self):
         publisher_methods=[
+            lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["publisher"]["name"],
             lambda: self.article.find("meta",  property="og:site_name")["content"],
             lambda: self.article.find("meta", attrs={'name':'cre'} ).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'cre'} ).get("value", None),
@@ -172,7 +188,8 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'twitter:site'} ).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'sailthru.description'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'dc.publisher'}).get("value", None),
-            lambda: self.article.find("meta", attrs={'name':'DC.publisher'}).get("value", None)
+            lambda: self.article.find("meta", attrs={'name':'DC.publisher'}).get("value", None),
+
         ]
         self.save_first(publisher_methods,"publisher")
 
