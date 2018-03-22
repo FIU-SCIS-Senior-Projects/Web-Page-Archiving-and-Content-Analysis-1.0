@@ -43,6 +43,7 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'title'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'mrc__share_title'} ).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'mrc__share_title'} ).get("content", None),
+            lambda: json.loads(self.article.find("meta", attrs={'name':'parsely-page'}).get("content", None))["link"],
         ]
         self.save_first(title_methods,"title")
 
@@ -83,8 +84,11 @@ class MetadataExtractor:
 
     def get_published_date(self):
         date_methods=[
-            lambda: self.article.find("meta",  property="date")["content"],
+            lambda: json.loads(self.article.find("meta", attrs={'name':'parsely-page'}).get("content", None))["pub_date"],
             lambda: self.article.find("meta",  property="article:published_time")["content"],
+            lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("value", None),
+            lambda: self.article.find("meta",  property="date")["content"],
             lambda: self.article.find("meta",  property="article:published")["content"],
             lambda: self.article.find("meta", attrs={'name':'sailthru.date'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'DCSext.articleFirstPublished'}).get("content", None),
@@ -118,8 +122,6 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'pubdate'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'analyticsAttributes.articleDate'}).get("content", None),
             lambda: self.article.find("meta", attrs={'name':'analyticsAttributes.articleDate'}).get("value", None),
-            lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("content", None),
-            lambda: self.article.find("meta", attrs={'itemprop':'datePublished'}).get("value", None),
             lambda: self.article.find("meta", attrs={'itemprop':'DCSext.articleFirstPublished'}).get("value", None),
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["datePublished"],
         ]
@@ -141,6 +143,12 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'modified'}).get("value", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateModified'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateModified'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'date.modified'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'date.modified'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'date.updated'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'date.updated'}).get("value", None),
+            lambda: self.article.find("meta", attrs={'property':'og:updated_time'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'property':'og:updated_time'}).get("value", None),
             lambda: self.article.find("meta", attrs={'itemprop':'REVISION_DATE'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'REVISION_DATE'}).get("value", None),
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["dateModified"],
@@ -149,6 +157,8 @@ class MetadataExtractor:
 
     def get_created_date(self):
         date_methods=[
+            lambda: self.article.find("meta", attrs={'itemprop':'date.created'}).get("content", None),
+            lambda: self.article.find("meta", attrs={'itemprop':'date.created'}).get("value", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'dateCreated'}).get("value", None),
             lambda: self.article.find("meta", attrs={'name':'created'}).get("content", None),
@@ -237,6 +247,7 @@ class MetadataExtractor:
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["mainEntityOfPage"],
             lambda: self.article.find("link", attrs={'rel':'amphtml'} ).get("href", None),
             lambda: self.article.find("link", attrs={'rel':'canonical'} ).get("href", None),
+            lambda: json.loads(self.article.find("meta", attrs={'name':'parsely-page'}).get("content", None))["link"],
 
         ]
         self.save_first(url_methods,"url")
