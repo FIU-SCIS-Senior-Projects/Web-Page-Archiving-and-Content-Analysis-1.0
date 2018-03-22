@@ -180,8 +180,8 @@ function createWindow() {
           fs.unlinkSync(curPath);
         }
       });
+      fs.rmdirSync(temp_dest);
     }
-    fs.rmdirSync(temp_dest);
   });
 }
 
