@@ -3,7 +3,8 @@ import os
 import csv
 from dicttoxml import dicttoxml
 from dateutil.parser import parse
-
+from xml.dom.minidom import parseString
+import codecs
 # wat_file="/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196120301161_theverge.com.wat"
 # html_file="/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196989105181_tass.com_2/988157.html"
 
@@ -72,6 +73,6 @@ for folder, subs, files in os.walk(dir_name):
 #         continue
 f.close()
 xml = dicttoxml(a, attr_type=False)
-f = open('test.xml','w')
-f.write(xml)
+f = codecs.open("test.xml", 'w', encoding='utf-8')
+f.write(parseString(xml).toprettyxml())
 f.close
