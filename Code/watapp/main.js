@@ -1,5 +1,4 @@
 const electron = require("electron");
-const unzip = require("unzip");
 var DecompressZip = require("decompress-zip");
 const fs = require("fs");
 const fstream = require("fstream");
@@ -29,10 +28,12 @@ let opened_file = process.argv[1];
 
 const temp_dest = path.join(os.tmpdir(),'Web Archive');
 
+/*
+This function is asynchronous due to the DecompressZip module
+It returns the unzipper and that unzipper has event handlers for when it finishes, errors or makes progress
+*/
 function unzip_wat(file) {
   devToolsLog(temp_dest);
-  // var unzipper = unzip.Extract({ path: temp_dest })
-  // fs.createReadStream(file).pipe(unzipper);
   var unzipper = new DecompressZip(file);
   unzipper.extract({
     path: temp_dest,
@@ -67,6 +68,7 @@ function devToolsLog(s) {
   }
 }
 
+// unzips wat to temp, determines main html, renders in preferred viewer
 function openWAT(opened_file) {
   const watfile_path = opened_file.split("/");
   const full_filename = watfile_path[watfile_path.length - 1]; // file.wat
@@ -106,7 +108,7 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 1140, height: 800 });
   // mainWindow.webContents.openDevTools();
-  if (opened_file && opened_file != ".") {
+  if (opened_file && opened_file != ".") { // If app opened with argument (either command line or double clicked)
     devToolsLog(opened_file);
     mainWindow.maximize();
     openWAT(opened_file);
@@ -171,6 +173,7 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+    //cleaning up temp directory
     if (fs.existsSync(temp_dest)) {
       fs.readdirSync(temp_dest).forEach(function(file, index){
         var curPath = path.join(temp_dest, file);
@@ -222,6 +225,7 @@ ipcMain.on("openWAT", (event, file) => {
   openWAT(file);
 });
 
+// When other process sends download message
 ipcMain.on("download", (event, downloadOptions) => {
   // const script = path.join(process.resourcesPath, "CLI", "wat.py");
   const script = path.join("../", "CLI", "wat.py");
@@ -244,7 +248,7 @@ ipcMain.on("download", (event, downloadOptions) => {
 
   const downloader = spawn("python", optionsArray);
 
-  downloader.stdout.on("data", data => {
+  downloader.stdout.on("data", data => { // Send data based on console output of download
     data = String(data).split("\n");
     console.log(`stdout: ${data}`);
     for (var i = 0; i < data.length; i++) {
@@ -273,6 +277,7 @@ ipcMain.on("download", (event, downloadOptions) => {
   });
 });
 
+// Handle user preference of viewer
 ipcMain.on("viewer-pref-change", (event, preference) => {
   if (preferred_viewer !== preference) {
     preferred_viewer = preference;
