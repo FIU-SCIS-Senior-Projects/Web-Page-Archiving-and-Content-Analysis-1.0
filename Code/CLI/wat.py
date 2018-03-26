@@ -4,6 +4,14 @@ import concurrent.futures
 import sys
 from download import download_url
 
+def download_output_wrapper(URL_num, URL, destpath, videos, i, rate_limit):
+	print "Downloading URL #" + URL_num + ": " + URL
+	sys.stdout.flush()
+	data = download_url( URL, destpath, videos, i, rate_limit)
+	print "Finished for URL #" + URL_num + ": " + URL
+	sys.stdout.flush()
+	return data
+
 def main():
 	#add command line arguments
 	parser = argparse.ArgumentParser()
@@ -34,12 +42,11 @@ def main():
 	# run downloads in thread pool executor
 	num_threads=args.threads
 	with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
-		future_to_url = {executor.submit(download_url,URLS[i], destpath, videos, i, args.rate_limit): i for i in range(0,len(URLS))}
+		future_to_url = {executor.submit(download_output_wrapper,str(i),URLS[i], destpath, videos, i, args.rate_limit): i for i in range(0,len(URLS))}
 		for future in concurrent.futures.as_completed(future_to_url):
 			i = future_to_url[future]
 			try:
 				data = future.result()
-				print "Finished for URL #" + str(i) + ": " + URLS[i]
 				print "URL #" + str(i) + ": " + URLS[i] + " can be found at " + str(data)
 				sys.stdout.flush()
 			except Exception as exc:

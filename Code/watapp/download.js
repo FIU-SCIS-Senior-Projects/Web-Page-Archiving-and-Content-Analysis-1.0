@@ -100,7 +100,7 @@ ipcRenderer.on('downloadOutput', (event, output) => {
       span.id="downloading-" + i
       span.innerHTML="..."
       li.id="url-li-"+i;
-      li.innerHTML="Downloading";
+      li.innerHTML="Waiting";
       li.appendChild(span)
       ol.appendChild(li)
 
@@ -123,6 +123,18 @@ ipcRenderer.on('downloadOutput', (event, output) => {
     a[3] = "#"+(urlNum+1)
     var textToShow =a.join(" ")
     li.innerHTML=textToShow;
+  }else if(output.startsWith("Downloading URL #")){
+    console.log(output);
+    a = output.split(" ");
+    var urlNum = Number(a[2].slice(1,a[2].length-1))
+    var li = document.getElementById("url-li-"+urlNum);
+    a[2] = "#"+(urlNum+1)
+    var textToShow =a.join(" ")
+    li.innerHTML=textToShow;
+    var span=document.createElement("span");
+    span.id="downloading-" + i
+    span.innerHTML="..."
+    li.appendChild(span)
   }else{
     var node = document.createElement("p");
     var textnode = document.createTextNode(`${output}`);

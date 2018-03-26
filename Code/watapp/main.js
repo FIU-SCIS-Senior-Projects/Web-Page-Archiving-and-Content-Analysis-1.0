@@ -250,6 +250,8 @@ ipcMain.on("download", (event, downloadOptions) => {
     for (var i = 0; i < data.length; i++) {
       if (data[i].startsWith("Finished for URL")) {
         event.sender.send("downloadOutput", data[i]);
+      }else if (data[i].startsWith("Downloading URL #")) {
+        event.sender.send("downloadOutput", data[i]);
       } else if (data[i].endsWith("URLS found")) {
         event.sender.send("downloadOutput", data[i]);
       } else if (data[i].includes("can be found at ")) {
