@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "pack": "build --dir",
-    "dist": "build"
+    "dist": "pyinstaller --clean -F ../CLI/wat.py --distpath ../CLI/dist && build"
   },
   "build": {
     "appId": "edu.fiu.watapp",
