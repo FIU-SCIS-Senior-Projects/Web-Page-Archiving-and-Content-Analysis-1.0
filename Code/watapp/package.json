@@ -26,10 +26,12 @@
         ]
       }
     ],
-    "extraResources": {
-      "from": "../CLI",
-      "to": "CLI"
-    },
+    "extraResources":
+      {
+        "from": "../CLI/dist/",
+        "to": "CLIBuild"
+      }
+    ,
     "fileAssociations": {
       "ext": "wat",
       "name": "WAT"

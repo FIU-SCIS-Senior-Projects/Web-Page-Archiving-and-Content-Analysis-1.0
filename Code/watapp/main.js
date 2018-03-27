@@ -227,8 +227,14 @@ ipcMain.on("openWAT", (event, file) => {
 
 // When other process sends download message
 ipcMain.on("download", (event, downloadOptions) => {
-  // const script = path.join(process.resourcesPath, "CLI", "wat.py");
-  const script = path.join("../", "CLI", "wat.py");
+  var noPython=true;
+  let script;
+  if(noPython){
+    script = ""
+  }else{
+    script = path.join(process.resourcesPath, "CLI", "wat.py");
+  }
+  // const script = path.join("../", "CLI", "wat.py");
   var optionsArray = [
     script,
     "-f",
@@ -245,8 +251,12 @@ ipcMain.on("download", (event, downloadOptions) => {
     optionsArray.push("--videos");
   }
   event.sender.send("downloadOutput", "Beginning download");
-
-  const downloader = spawn("python", optionsArray);
+  let downloader;
+  if(noPython){
+    downloader = spawn(path.join(process.resourcesPath, "CLIBuild", "wat"), optionsArray.slice(1));
+  }else{
+    downloader = spawn("python", optionsArray);
+  }
 
   downloader.stdout.on("data", data => { // Send data based on console output of download
     data = String(data).split("\n");
