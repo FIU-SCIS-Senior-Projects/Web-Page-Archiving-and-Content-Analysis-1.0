@@ -5,10 +5,10 @@ import sys
 from download import download_url
 
 def download_output_wrapper(URL_num, URL, destpath, videos, i, rate_limit):
-	print "Downloading URL #" + URL_num + ": " + URL
+	print "Downloading URL #" + URL_num + ": " + URL +"\n"
 	sys.stdout.flush()
 	data = download_url( URL, destpath, videos, i, rate_limit)
-	print "Finished for URL #" + URL_num + ": " + URL
+	print "Finished for URL #" + URL_num + ": " + URL +"\n"
 	sys.stdout.flush()
 	return data
 
@@ -36,7 +36,7 @@ def main():
 		url = line.strip()
 		URLS.append(url)
 		line = args.file.readline()
-	print str(len(URLS)) + " URLS found"
+	print str(len(URLS)) + " URLS found" +"\n"
 	sys.stdout.flush()
 
 	# run downloads in thread pool executor
@@ -47,7 +47,7 @@ def main():
 			i = future_to_url[future]
 			try:
 				data = future.result()
-				print "URL #" + str(i) + ": " + URLS[i] + " can be found at " + str(data)
+				print "URL #" + str(i) + ": " + URLS[i] + " can be found at " + str(data) +"\n"
 				sys.stdout.flush()
 			except Exception as exc:
 				print('%r generated an exception: %s' % (url, exc))
