@@ -3,4 +3,14 @@
 
 - To create a .wat file, just create a wat_link.txt file in the directory that has the name of the main html file as the only contents. Then simply zip and rename to end with ".wat"
 
-City database needs to be downloded from [here](https://dev.maxmind.com/geoip/geoip2/geolite2/) and placed in "Code/Analysis/geo_db" 
+City database needs to be downloded from [here](https://dev.maxmind.com/geoip/geoip2/geolite2/) and placed in "Code/Analysis/geo_db"
+
+wget must be installed
+
+python dependencies:
+dicttoxml
+dateutil.parser
+xml.dom.minidom
+geoip2.database
+concurrent.futures
+urllib
