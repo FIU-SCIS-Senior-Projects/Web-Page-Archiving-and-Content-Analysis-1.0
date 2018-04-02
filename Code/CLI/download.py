@@ -59,17 +59,30 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 	f.close()
 	source_path = os.path.join("./files/" + dest_name + "/",index_file)
 
-	if platform.system()=="Linux":
-		make_symlink(source_path, link_dest)
-	else:
-		make_url_file(os.path.join(dest_path,source_path),link_dest)
-	wat_file = make_wat_file(full_path)
+	wat_file = make_wat_file(full_path, os.path.join(dest_path,dest_name))
 	return os.path.abspath(wat_file)
 
+def make_wat_file(full_path, dest_path):
+	"""
+	Function that zips directory and renames it as a wat file
+	"""
+	for file in os.listdir(full_path):
+		if os.path.getmtime(os.path.join(full_path,file))<=315532800:
+			with open(os.path.join(full_path,file), 'a'):
+				os.utime(os.path.join(full_path,file), None)
+	zf = zipfile.ZipFile(dest_path+".zip", "w", zipfile.ZIP_DEFLATED)
+	for dirname, subdirs, files in os.walk(full_path):
+	    for filename in files:
+	        zf.write(os.path.join(dirname, filename), arcname=filename)
+	zf.close()
+	os.rename(dest_path+".zip",dest_path+".wat")
+	return dest_path+".wat"
 
+
+# Deprecated functions
 def make_symlink(source_path, link_name):
 	os.symlink(source_path, link_name)
-	
+
 def make_url_file(source_path,file_loc_name):
 	source_absolute = os.path.abspath(source_path)
 	file_contents = """[InternetShortcut]
@@ -78,19 +91,3 @@ IconIndex=0"""
 	file_loc = open(file_loc_name + ".url", "w")
 	file_loc.write(file_contents)
 	file_loc.close()
-
-def make_wat_file(full_path):
-	"""
-	Function that zips directory and renames it as a wat file
-	"""
-	for file in os.listdir(full_path):
-		if os.path.getmtime(os.path.join(full_path,file))<=315532800:
-			with open(os.path.join(full_path,file), 'a'):
-				os.utime(os.path.join(full_path,file), None)
-	zf = zipfile.ZipFile(full_path+".zip", "w", zipfile.ZIP_DEFLATED)
-	for dirname, subdirs, files in os.walk(full_path):
-	    for filename in files:
-	        zf.write(os.path.join(dirname, filename), arcname=filename)
-	zf.close()
-	os.rename(full_path+".zip",full_path+".wat")
-	return full_path+".wat"

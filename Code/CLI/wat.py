@@ -2,6 +2,7 @@ import argparse
 import os
 import concurrent.futures
 import sys
+import shutil
 from download import download_url
 
 def download_output_wrapper(URL_num, URL, destpath, videos, i, rate_limit):
@@ -51,6 +52,8 @@ def main():
 				sys.stdout.flush()
 			except Exception as exc:
 				print('%r generated an exception: %s' % (url, exc))
+	shutil.rmtree(os.path.join(destpath,"files"))
+
 
 if __name__ == "__main__":
 	main()
