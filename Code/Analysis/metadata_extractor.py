@@ -218,6 +218,9 @@ class MetadataExtractor:
         self.save_first(publisher_methods,"publisher")
 
     def get_publisher_origin(self, url):
+        if not os.path.isfile('./geo_db/GeoLite2-City.mmdb'):
+            print "No geo DB found. See README"
+            return
         if url:
             reader = geoip2.database.Reader('./geo_db/GeoLite2-City.mmdb')
             ip = socket.gethostbyname_ex(url.split("//")[-1].split("/")[0].split('?')[0])[2][0]

@@ -10,3 +10,4 @@ build
 wat.spec
 test.csv
 test.xml
+*.mmdb
