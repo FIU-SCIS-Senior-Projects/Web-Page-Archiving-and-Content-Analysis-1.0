@@ -5,6 +5,8 @@ import shutil
 import os
 import re
 import json
+import geoip2.database
+import socket
 # "/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196120301161_theverge.com/amazon-echo-google-home-nsa-voice-surveillance.html"
 
 class MetadataExtractor:
@@ -19,7 +21,7 @@ class MetadataExtractor:
                 val = method()
                 if val:
                     self.data[prop] = val.encode('utf-8')
-                    break
+                    return val
                 else:
                     self.data[prop]= None
             except Exception as e:
@@ -215,12 +217,14 @@ class MetadataExtractor:
         ]
         self.save_first(publisher_methods,"publisher")
 
-    def get_publisher_origin(self):
-        publisher_origin_methods=[
-            lambda: self.article.find("meta", attrs={'name':'sailthru.location'}).get("content", None),
-
-        ]
-        self.save_first(publisher_origin_methods,"publisherOrigin")
+    def get_publisher_origin(self, url):
+        if url:
+            reader = geoip2.database.Reader('./geo_db/GeoLite2-City.mmdb')
+            ip = socket.gethostbyname_ex(url.split("//")[-1].split("/")[0].split('?')[0])[2][0]
+            response = reader.city(ip)
+            self.data["publisherCountry"] = response.country.iso_code
+            self.data["publisherCoordinates"] = str(response.location.latitude) + "," + str(response.location.longitude)
+            reader.close()
 
     def get_language(self):
         language_methods=[
@@ -250,10 +254,10 @@ class MetadataExtractor:
             lambda: json.loads(self.article.find("meta", attrs={'name':'parsely-page'}).get("content", None))["link"],
 
         ]
-        self.save_first(url_methods,"url")
+        return self.save_first(url_methods,"url")
 
 
-    def extract_data_from_html(self, file_name):
+    def extract_data_from_html(self, file_name, url=None):
         self.data={}
         with open(file_name) as fp:
             self.article = BeautifulSoup(fp, 'html.parser')
@@ -264,12 +268,19 @@ class MetadataExtractor:
         self.get_author()
         self.get_publisher()
         self.get_header()
-        self.get_publisher_origin()
         self.get_language()
-        self.get_url()
+        if not url:
+            url = self.get_url()
+            if url:
+                print url
+                self.get_publisher_origin(url)
+        else:
+            self.data["url"]=url
+            self.get_publisher_origin(url)
+
         return self.data
 
-    def extract_data_from_wat(self,wat_file):
+    def extract_data_from_wat(self,wat_file, url=None):
         self.data={}
         dirpath = os.path.join(tempfile.mkdtemp(),"extraction")
 

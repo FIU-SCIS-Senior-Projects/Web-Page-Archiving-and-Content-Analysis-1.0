@@ -23,7 +23,8 @@ mydict={
     "publisher":"",
     "title":"",
     "fileLocation":"",
-    "publisherOrigin":"",
+    "publisherCountry":"",
+    "publisherCoordinates":"",
     "language":"",
     "url":""
 }
