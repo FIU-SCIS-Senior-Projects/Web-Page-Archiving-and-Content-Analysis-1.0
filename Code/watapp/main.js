@@ -50,6 +50,11 @@ function getWatLink(dir) {
   return url.toString();
 }
 
+function getWatLink_v2(dir) {
+  var wat_json = JSON.parse(fs.readFileSync(path.join(dir, "wat.json")));
+  return wat_json.index;
+}
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -104,6 +109,42 @@ function openWAT(opened_file) {
   });
 }
 
+// unzips wat to temp, determines main html, renders in preferred viewer
+function openWAT_v2(opened_file) {
+  const watfile_path = opened_file.split("/");
+  const full_filename = watfile_path[watfile_path.length - 1]; // file.wat
+  const filename = full_filename.substr(0, full_filename.indexOf(".wat"));
+
+  let unzipper = unzip_wat(opened_file);
+  unzipper.on("error", function(err) {
+    console.log("Caught an error");
+    console.log(err);
+  });
+  unzipper.on("extract", e => {
+    var fileLocation;
+    console.log(e);
+    if (fs.existsSync(path.join(temp_dest, `${filename}`))) {
+      fileLocation = path.join(temp_dest, `${filename}`);
+    } else {
+      fileLocation = temp_dest;
+    }
+    console.log(fileLocation);
+    let dest_file = getWatLink_v2(fileLocation);
+    console.log(dest_file);
+
+    let url_to_load = url.format({
+      pathname: path.join(fileLocation,"files", `${dest_file}`),
+      protocol: "file:",
+      slashes: true
+    });
+    if (preferred_viewer == "external") {
+      electron.shell.openExternal(url_to_load);
+    } else {
+      mainWindow.loadURL(url.format(url_to_load));
+    }
+  });
+}
+
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 1140, height: 800 });
@@ -111,7 +152,7 @@ function createWindow() {
   if (opened_file && opened_file != ".") { // If app opened with argument (either command line or double clicked)
     devToolsLog(opened_file);
     mainWindow.maximize();
-    openWAT(opened_file);
+    openWAT_v2(opened_file);
     if(preferred_viewer=="external"){
       mainWindow.loadURL(
         url.format({
@@ -222,7 +263,7 @@ ipcMain.on("openWAT", (event, file) => {
   if (preferred_viewer == "internal") {
     mainWindow.maximize();
   }
-  openWAT(file);
+  openWAT_v2(file);
 });
 
 // When other process sends download message
