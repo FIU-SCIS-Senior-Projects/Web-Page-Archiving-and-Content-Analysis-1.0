@@ -26,12 +26,10 @@
         ]
       }
     ],
-    "extraResources":
-      {
-        "from": "../CLI/dist/",
-        "to": "CLIBuild"
-      }
-    ,
+    "extraResources": {
+      "from": "../CLI/dist/",
+      "to": "CLIBuild"
+    },
     "fileAssociations": {
       "ext": "wat",
       "name": "WAT"
@@ -47,6 +45,7 @@
   "dependencies": {
     "decompress-zip": "^0.3.0",
     "electron-store": "^1.3.0",
+    "fs-extra": "^5.0.0",
     "unzip": "^0.1.11"
   }
 }

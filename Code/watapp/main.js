@@ -1,6 +1,6 @@
 const electron = require("electron");
 var DecompressZip = require("decompress-zip");
-const fs = require("fs");
+const fs = require('fs-extra')
 const fstream = require("fstream");
 const os = require("os");
 // Module to control application life.
@@ -216,15 +216,7 @@ function createWindow() {
     mainWindow = null;
     //cleaning up temp directory
     if (fs.existsSync(temp_dest)) {
-      fs.readdirSync(temp_dest).forEach(function(file, index){
-        var curPath = path.join(temp_dest, file);
-        if (fs.lstatSync(curPath).isDirectory()) { // recurse
-          deleteFolderRecursive(curPath);
-        } else { // delete file
-          fs.unlinkSync(curPath);
-        }
-      });
-      fs.rmdirSync(temp_dest);
+      fs.removeSync(temp_dest);
     }
   });
 }
