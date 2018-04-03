@@ -45,7 +45,7 @@ function unzip_wat(file) {
   return unzipper;
 }
 
-function getWatLink(dir) {
+function getWatLink_v1(dir) {
   var url = fs.readFileSync(path.join(dir, "wat_link.txt"));
   return url.toString();
 }
@@ -74,42 +74,6 @@ function devToolsLog(s) {
 }
 
 // unzips wat to temp, determines main html, renders in preferred viewer
-function openWAT(opened_file) {
-  const watfile_path = opened_file.split("/");
-  const full_filename = watfile_path[watfile_path.length - 1]; // file.wat
-  const filename = full_filename.substr(0, full_filename.indexOf(".wat"));
-
-  let unzipper = unzip_wat(opened_file);
-  unzipper.on("error", function(err) {
-    console.log("Caught an error");
-    console.log(err);
-  });
-  unzipper.on("extract", e => {
-    var fileLocation;
-    console.log(e);
-    if (fs.existsSync(path.join(temp_dest, `${filename}`))) {
-      fileLocation = path.join(temp_dest, `${filename}`);
-    } else {
-      fileLocation = temp_dest;
-    }
-    console.log(fileLocation);
-    let dest_file = getWatLink(fileLocation);
-    console.log(dest_file);
-
-    let url_to_load = url.format({
-      pathname: path.join(fileLocation, `${dest_file}`),
-      protocol: "file:",
-      slashes: true
-    });
-    if (preferred_viewer == "external") {
-      electron.shell.openExternal(url_to_load);
-    } else {
-      mainWindow.loadURL(url.format(url_to_load));
-    }
-  });
-}
-
-// unzips wat to temp, determines main html, renders in preferred viewer
 function openWAT_v2(opened_file) {
   const watfile_path = opened_file.split("/");
   const full_filename = watfile_path[watfile_path.length - 1]; // file.wat
@@ -129,11 +93,16 @@ function openWAT_v2(opened_file) {
       fileLocation = temp_dest;
     }
     console.log(fileLocation);
-    let dest_file = getWatLink_v2(fileLocation);
+    let destfile;
+    if (fs.existsSync(path.join(fileLocation,"wat_link.txt"))) {
+      dest_file = getWatLink_v1(fileLocation);
+    }else if (fs.existsSync(path.join(fileLocation,"wat.json"))) {
+      dest_file = path.join("files",getWatLink_v2(fileLocation));
+    }
     console.log(dest_file);
 
     let url_to_load = url.format({
-      pathname: path.join(fileLocation,"files", `${dest_file}`),
+      pathname: path.join(fileLocation, `${dest_file}`),
       protocol: "file:",
       slashes: true
     });
