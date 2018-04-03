@@ -6,7 +6,14 @@ import subprocess
 import sys
 import shutil
 import zipfile
+import json
 from html_root_finder import *
+sys.path.append('../Analysis')
+from metadata_extractor import MetadataExtractor
+from dateutil.parser import parse
+from bs4 import BeautifulSoup
+import geoip2.database
+import socket
 
 def get_domain_name(url):
 	"""
@@ -59,10 +66,10 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 	f.close()
 	source_path = os.path.join("./files/" + dest_name + "/",index_file)
 
-	wat_file = make_wat_file(full_path, os.path.join(dest_path,dest_name))
+	wat_file = make_wat_file(full_path, os.path.join(dest_path,dest_name),url,index_file)
 	return os.path.abspath(wat_file)
 
-def make_wat_file(full_path, dest_path):
+def make_wat_file(full_path, dest_path, url, index):
 	"""
 	Function that zips directory and renames it as a wat file
 	"""
@@ -73,7 +80,26 @@ def make_wat_file(full_path, dest_path):
 	zf = zipfile.ZipFile(dest_path+".zip", "w", zipfile.ZIP_DEFLATED)
 	for dirname, subdirs, files in os.walk(full_path):
 	    for filename in files:
-	        zf.write(os.path.join(dirname, filename), arcname=filename)
+	        zf.write(os.path.join(dirname, filename), arcname=os.path.join("files",filename))
+	wat_info ={
+		"url": url,
+		"version": "2.0",
+		"index": index
+	}
+	with open(os.path.join(full_path,'wat.json'), 'w') as fp:
+		json.dump(wat_info, fp)
+	zf.write(os.path.join(full_path,'wat.json'), arcname="wat.json")
+	m = MetadataExtractor()
+	d = m.extract_data_from_html(os.path.join(full_path,index))
+	if "publishedDate" in d:
+		d["publishedDate"] = parse(d["publishedDate"]).isoformat()
+	if "createdDate" in d:
+		d["createdDate"] = parse(d["createdDate"]).isoformat()
+	if "modifiedDate" in d:
+		d["modifiedDate"] = parse(d["modifiedDate"]).isoformat()
+	with open(os.path.join(full_path,'meta.json'), 'w') as fp:
+		json.dump(d, fp)
+	zf.write(os.path.join(full_path,'meta.json'), arcname="extraction/meta.json")
 	zf.close()
 	os.rename(dest_path+".zip",dest_path+".wat")
 	return dest_path+".wat"
