@@ -61,10 +61,6 @@ def download_url(url, dest_path, videos=False, suffix=None, rate_limit=None):
 
 	# index file = find_root_html(full_path)
 	index_file = search_wget_output(wget_output)
-	f=open(os.path.join(full_path,"wat_link.txt"),"w")
-	f.write(index_file)
-	f.close()
-	source_path = os.path.join("./files/" + dest_name + "/",index_file)
 
 	wat_file = make_wat_file(full_path, os.path.join(dest_path,dest_name),url,index_file)
 	return os.path.abspath(wat_file)
