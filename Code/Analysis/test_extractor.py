@@ -1,7 +1,5 @@
 import unittest
 import sys
-sys.path.append('..')
-sys.path.append('../geo_db/GeoLite2-City.mmdb')
 from metadata_extractor import MetadataExtractor
 
 class TestExtractMethods(unittest.TestCase):
