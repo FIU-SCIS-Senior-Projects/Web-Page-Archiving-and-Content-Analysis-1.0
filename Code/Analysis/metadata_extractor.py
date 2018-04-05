@@ -26,6 +26,7 @@ class MetadataExtractor:
                     self.data[prop]= None
             except Exception as e:
                 continue
+        return None
 
     def get_title(self):
         title_methods=[
@@ -47,7 +48,7 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'mrc__share_title'} ).get("content", None),
             lambda: json.loads(self.article.find("meta", attrs={'name':'parsely-page'}).get("content", None))["link"],
         ]
-        self.save_first(title_methods,"title")
+        return self.save_first(title_methods,"title")
 
     def get_author(self):
         author_methods=[
@@ -82,7 +83,7 @@ class MetadataExtractor:
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["creator"],
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["author"],
         ]
-        self.save_first(author_methods,"author")
+        return self.save_first(author_methods,"author")
 
     def get_published_date(self):
         date_methods=[
@@ -127,7 +128,7 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'itemprop':'DCSext.articleFirstPublished'}).get("value", None),
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["datePublished"],
         ]
-        self.save_first(date_methods,"publishedDate")
+        return self.save_first(date_methods,"publishedDate")
 
     def get_modified_date(self):
         date_methods=[
@@ -155,7 +156,7 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'itemprop':'REVISION_DATE'}).get("value", None),
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["dateModified"],
         ]
-        self.save_first(date_methods,"modifiedDate")
+        return self.save_first(date_methods,"modifiedDate")
 
     def get_created_date(self):
         date_methods=[
@@ -167,7 +168,7 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'created'}).get("value", None),
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["dateCreated"],
         ]
-        self.save_first(date_methods,"createdDate")
+        return self.save_first(date_methods,"createdDate")
 
     def get_header(self):
         header_methods=[
@@ -192,7 +193,7 @@ class MetadataExtractor:
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["description"],
 
         ]
-        self.save_first(header_methods,"header")
+        return self.save_first(header_methods,"header")
 
     def get_publisher(self):
         publisher_methods=[
@@ -215,7 +216,7 @@ class MetadataExtractor:
             lambda: self.article.find("meta", attrs={'name':'DC.publisher'}).get("value", None),
 
         ]
-        self.save_first(publisher_methods,"publisher")
+        return self.save_first(publisher_methods,"publisher")
 
     def get_publisher_origin(self, url):
         if not os.path.isfile('./geo_db/GeoLite2-City.mmdb'):
@@ -228,6 +229,7 @@ class MetadataExtractor:
             self.data["publisherCountry"] = response.country.iso_code
             self.data["publisherCoordinates"] = str(response.location.latitude) + "," + str(response.location.longitude)
             reader.close()
+            return (response.country.iso_code,str(response.location.latitude) + "," + str(response.location.longitude))
 
     def get_language(self):
         language_methods=[
@@ -239,7 +241,7 @@ class MetadataExtractor:
             lambda: self.article.find("meta",  property="lang")["content"],
 
         ]
-        self.save_first(language_methods,"language")
+        return self.save_first(language_methods,"language")
 
     def get_url(self):
         url_methods=[
