@@ -288,10 +288,9 @@ class MetadataExtractor:
         dirpath = os.path.join(tempfile.mkdtemp(),"extraction")
 
         archive = zipfile.ZipFile(wat_file)
-        archive.extract("wat_link.txt", dirpath)
-        with open(os.path.join(dirpath,"wat_link.txt")) as f:
-            file = f.readline()
-        archive.extract(file,dirpath)
-        data= self.extract_data_from_html(os.path.join(dirpath,file))
+        archive.extract("wat.json", dirpath)
+        data = json.load(open(os.path.join(dirpath,'wat.json')))
+        archive.extract(os.path.join("files",data["index"]),dirpath)
+        data= self.extract_data_from_html(os.path.join(dirpath,"files",data["index"]))
         shutil.rmtree(dirpath)
         return data
