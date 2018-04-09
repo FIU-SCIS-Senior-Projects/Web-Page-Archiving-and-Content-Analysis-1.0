@@ -11,6 +11,7 @@ from html_root_finder import *
 sys.path.append('../Analysis')
 from metadata_extractor import MetadataExtractor
 from dateutil.parser import parse
+import datetime
 from bs4 import BeautifulSoup
 import geoip2.database
 import socket
@@ -112,11 +113,23 @@ def make_wat_file(full_path, dest_path, url, index):
 	m = MetadataExtractor()
 	d = m.extract_data_from_html(os.path.join(full_path,index))
 	if "publishedDate" in d:
-		d["publishedDate"] = parse(d["publishedDate"]).isoformat()
+		date = parse(d["publishedDate"]).isoformat()
+		if ambiguous_date(date):
+			d["published_ambiguous"]=True
+			d["published_unparsed"]=d["publishedDate"]
+		d["publishedDate"] = date
 	if "createdDate" in d:
-		d["createdDate"] = parse(d["createdDate"]).isoformat()
+		date = parse(d["createdDate"]).isoformat()
+		if ambiguous_date(date):
+			d["created_ambiguous"]=True
+			d["created_unparsed"]=d["createdDate"]
+		d["createdDate"] = date
 	if "modifiedDate" in d:
-		d["modifiedDate"] = parse(d["modifiedDate"]).isoformat()
+		date = parse(d["modifiedDate"]).isoformat()
+		if ambiguous_date(date):
+			d["modified_ambiguous"]=True
+			d["modified_unparsed"]=d["modifiedDate"]
+		d["modifiedDate"] = date
 	d["url"]=url
 	with open(os.path.join(full_path,'meta.json'), 'w') as fp:
 		json.dump(d, fp)
@@ -127,6 +140,10 @@ def make_wat_file(full_path, dest_path, url, index):
 	os.rename(dest_path+".zip",dest_path+".wat")
 	return dest_path+".wat"
 
+def ambiguous_date(date):
+	x=re.search(r"^(0?[1-9]|1[0-2])(.|-)(0?[1-9]|1[0-2])(.|-|)[0-9][0-9][0-9]?[0-9]?$",date)
+	if x:
+		return True
 
 # Deprecated functions
 def make_symlink(source_path, link_name):
