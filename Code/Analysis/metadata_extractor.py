@@ -7,7 +7,6 @@ import re
 import json
 import geoip2.database
 import socket
-# "/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196120301161_theverge.com/amazon-echo-google-home-nsa-voice-surveillance.html"
 
 class MetadataExtractor:
     """Simple metadata extractor"""
