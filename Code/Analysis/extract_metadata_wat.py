@@ -4,7 +4,7 @@ import csv
 from dicttoxml import dicttoxml
 from dateutil.parser import parse
 from xml.dom.minidom import parseString
-import codecscts
+import codecs
 
 """
 Test file that parses all of the reference work from Andres and saves to csv and xml
