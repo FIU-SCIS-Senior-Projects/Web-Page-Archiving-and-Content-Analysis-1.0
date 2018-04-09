@@ -16,6 +16,9 @@ class MetadataExtractor:
         self.article = None
 
     def save_first(self, methods, prop):
+        """
+        Method to loop through an array of lambda functions and store the result in the relevant property
+        """
         for method in methods:
             try:
                 val = method()
@@ -29,6 +32,9 @@ class MetadataExtractor:
         return None
 
     def get_title(self):
+        """
+        Passes array of lambda functions relevant to finding title from metadata
+        """
         title_methods=[
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["headline"],
             lambda: self.article.find("meta",  property="og:title")["content"],
@@ -51,6 +57,9 @@ class MetadataExtractor:
         return self.save_first(title_methods,"title")
 
     def get_author(self):
+        """
+        Passes array of lambda functions relevant to finding author from metadata
+        """
         author_methods=[
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["author"]["name"],
             lambda: self.article.find("meta", attrs={'name':'author'}).get("content", None),
@@ -86,6 +95,9 @@ class MetadataExtractor:
         return self.save_first(author_methods,"author")
 
     def get_published_date(self):
+        """
+        Passes array of lambda functions relevant to finding published date from metadata
+        """
         date_methods=[
             lambda: json.loads(self.article.find("meta", attrs={'name':'parsely-page'}).get("content", None))["pub_date"],
             lambda: self.article.find("meta",  property="article:published_time")["content"],
@@ -131,6 +143,9 @@ class MetadataExtractor:
         return self.save_first(date_methods,"publishedDate")
 
     def get_modified_date(self):
+        """
+        Passes array of lambda functions relevant to finding modified date from metadata
+        """
         date_methods=[
             lambda: self.article.find("meta",  property="article:modified_time")["content"],
             lambda: self.article.find("meta",  property="article:modified")["content"],
@@ -159,6 +174,9 @@ class MetadataExtractor:
         return self.save_first(date_methods,"modifiedDate")
 
     def get_created_date(self):
+        """
+        Passes array of lambda functions relevant to finding created date from metadata
+        """
         date_methods=[
             lambda: self.article.find("meta", attrs={'itemprop':'date.created'}).get("content", None),
             lambda: self.article.find("meta", attrs={'itemprop':'date.created'}).get("value", None),
@@ -171,6 +189,9 @@ class MetadataExtractor:
         return self.save_first(date_methods,"createdDate")
 
     def get_header(self):
+        """
+        Passes array of lambda functions relevant to finding header from metadata
+        """
         header_methods=[
             lambda: self.article.find("meta", attrs={'name':'description'}).get("content", None),
             lambda: self.article.find("meta",  property="og:description")["content"],
@@ -196,6 +217,9 @@ class MetadataExtractor:
         return self.save_first(header_methods,"header")
 
     def get_publisher(self):
+        """
+        Passes array of lambda functions relevant to finding publisher name from metadata
+        """
         publisher_methods=[
             lambda: json.loads(self.article.find("script", attrs={'type':'application/ld+json'}).contents[0])["publisher"]["name"],
             lambda: self.article.find("meta",  property="og:site_name")["content"],
@@ -219,6 +243,9 @@ class MetadataExtractor:
         return self.save_first(publisher_methods,"publisher")
 
     def get_publisher_origin(self, url):
+        """
+        Method responsible for getting the IP address of the URL and finding its origin using geoip database
+        """
         if not os.path.isfile('./geo_db/GeoLite2-City.mmdb'):
             print "No geo DB found. See README"
             return
@@ -232,6 +259,9 @@ class MetadataExtractor:
             return (response.country.iso_code,str(response.location.latitude) + "," + str(response.location.longitude))
 
     def get_language(self):
+        """
+        Passes array of lambda functions relevant to finding language from metadata
+        """
         language_methods=[
             lambda: self.article.find("meta",  property="og:locale")["content"],
             lambda: self.article.find("meta", attrs={'name':'DC.language'}).get("content", None),
@@ -244,6 +274,9 @@ class MetadataExtractor:
         return self.save_first(language_methods,"language")
 
     def get_url(self):
+        """
+        Passes array of lambda functions relevant to finding url from metadata
+        """
         url_methods=[
             lambda: self.article.find("meta",  property="og:url")["content"],
             lambda: self.article.find("meta", attrs={'name':'twitter:url'} ).get("content", None),
@@ -263,6 +296,9 @@ class MetadataExtractor:
 
 
     def extract_data_from_html(self, file_name, url=None):
+        """
+        Method responsible for getting all attributes from metadata
+        """
         self.data={}
         with open(file_name) as fp:
             self.article = BeautifulSoup(fp, 'html.parser')
@@ -286,6 +322,9 @@ class MetadataExtractor:
         return self.data
 
     def extract_data_from_wat(self,wat_file, url=None):
+        """
+        Method responsible for opening wat file to get the index html and extract metadata
+        """
         self.data={}
         dirpath = os.path.join(tempfile.mkdtemp(),"extraction")
 
