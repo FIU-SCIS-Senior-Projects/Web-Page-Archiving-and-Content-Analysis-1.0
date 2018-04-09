@@ -6,6 +6,8 @@
 City database needs to be downloded from [here](https://dev.maxmind.com/geoip/geoip2/geolite2/) and placed in "Code/Analysis/geo_db"
 
 wget must be installed
+npm must be installed
+node must be installed (latest version. If you have too early a version you won't be able to build)
 
 python dependencies:
 dicttoxml
@@ -14,3 +16,9 @@ xml.dom.minidom
 geoip2.database
 concurrent.futures
 urllib
+
+Must run ```npm install``` in the watapp directory
+Must run ```pip install -r requirements.txt```
+
+run ```npm run dist``` in the watapp directory to build the program
+run the created program in whatever way is appropriate for your system.
