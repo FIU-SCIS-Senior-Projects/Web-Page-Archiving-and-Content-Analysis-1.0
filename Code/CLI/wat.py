@@ -6,6 +6,9 @@ import shutil
 from download import download_url
 
 def download_output_wrapper(URL_num, URL, destpath, videos, i, rate_limit):
+	"""
+	Wrapper around download to provide print output for info on what's downloaded and what's done
+	"""
 	print "Downloading URL #" + URL_num + ": " + URL +"\n"
 	sys.stdout.flush()
 	data = download_url( URL, destpath, videos, i, rate_limit)

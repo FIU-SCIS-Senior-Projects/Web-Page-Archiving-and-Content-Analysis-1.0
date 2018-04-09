@@ -4,14 +4,14 @@ import csv
 from dicttoxml import dicttoxml
 from dateutil.parser import parse
 from xml.dom.minidom import parseString
-import codecs
-# wat_file="/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196120301161_theverge.com.wat"
-# html_file="/run/media/mfajet/Data/projects/Web-Page-Archiving-and-Content-Analysis-1.0/Code/watapp/outdir/files/15196989105181_tass.com_2/988157.html"
+import codecscts
+
+"""
+Test file that parses all of the reference work from Andres and saves to csv and xml
+"""
 
 m = MetadataExtractor()
-# print m.extract_data_from_wat(wat_file)
-# print m.extract_data_from_html(html_file)
-#
+
 dir_name="../Reference Work/"
 f = open('test.csv','w')
 mydict={
@@ -62,16 +62,6 @@ for folder, subs, files in os.walk(dir_name):
             else:
                 continue
 
-
-# for filename in os.listdir(dir_name):
-#     if filename.endswith(".wat"):
-#         d = m.extract_data_from_wat(os.path.join(dir_name,filename))
-#         if not ("date" in d and "title" in d and "header" in d and "publisher" in d and "author" in d):
-#             print filename
-#         w.writerow(d)
-#         continue
-#     else:
-#         continue
 f.close()
 xml = dicttoxml(a, attr_type=False)
 f = codecs.open("test.xml", 'w', encoding='utf-8')
