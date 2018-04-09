@@ -11,7 +11,6 @@ from html_root_finder import *
 sys.path.append('../Analysis')
 from metadata_extractor import MetadataExtractor
 from dateutil.parser import parse
-import datetime
 from bs4 import BeautifulSoup
 import geoip2.database
 import socket
@@ -109,7 +108,7 @@ def make_wat_file(full_path, dest_path, url, index):
 		json.dump(wat_info, fp)
 	zf.write(os.path.join(full_path,'wat.json'), arcname="wat.json")
 
-	#Extract metadat from html and save it in /extraction/meta.json
+	#Extract metadata from html and save it in /extraction/meta.json
 	m = MetadataExtractor()
 	d = m.extract_data_from_html(os.path.join(full_path,index))
 	if "publishedDate" in d:
@@ -141,9 +140,15 @@ def make_wat_file(full_path, dest_path, url, index):
 	return dest_path+".wat"
 
 def ambiguous_date(date):
+	"""
+	Parameter:
+		date: (str)
+	Returns: whether format is ambiguous or not (bool)
+	"""
 	x=re.search(r"^(0?[1-9]|1[0-2])(.|-)(0?[1-9]|1[0-2])(.|-|)[0-9][0-9][0-9]?[0-9]?$",date)
 	if x:
 		return True
+	return False
 
 # Deprecated functions
 def make_symlink(source_path, link_name):
