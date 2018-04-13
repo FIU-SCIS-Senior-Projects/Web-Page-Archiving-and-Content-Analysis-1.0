@@ -9,6 +9,8 @@ import geoip2.database
 import socket
 import sys
 
+import content_extractor
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
@@ -328,6 +330,8 @@ class MetadataExtractor:
         else:
             self.data["url"]=url
             self.get_publisher_origin(url)
+
+        self.data["content"] = content_extractor.extract_content_from_html(file_name)
 
         return self.data
 
