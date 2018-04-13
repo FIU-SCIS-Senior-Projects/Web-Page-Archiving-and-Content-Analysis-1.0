@@ -7,6 +7,17 @@ import re
 import json
 import geoip2.database
 import socket
+import sys
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 class MetadataExtractor:
     """Simple metadata extractor"""
@@ -245,11 +256,11 @@ class MetadataExtractor:
         """
         Method responsible for getting the IP address of the URL and finding its origin using geoip database
         """
-        if not os.path.isfile('./geo_db/GeoLite2-City.mmdb'):
+        if not os.path.isfile(resource_path('./geo_db/GeoLite2-City.mmdb')):
             print "No geo DB found. See README"
             return
         if url:
-            reader = geoip2.database.Reader('./geo_db/GeoLite2-City.mmdb')
+            reader = geoip2.database.Reader(resource_path('./geo_db/GeoLite2-City.mmdb'))
             ip = socket.gethostbyname_ex(url.split("//")[-1].split("/")[0].split('?')[0])[2][0]
             response = reader.city(ip)
             self.data["publisherCountry"] = response.country.iso_code

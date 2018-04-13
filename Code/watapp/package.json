@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "pack": "build --dir",
-    "dist": "cd ../CLI && pyinstaller --clean -F ../CLI/wat.py --distpath ../CLI/dist --workpath ../CLI/build --upx-dir ../CLI/build/wat && cd ../watapp && build"
+    "dist": "cd ../CLI && pyinstaller --clean -F --add-data=../Analysis/geo_db/:./geo_db/ ../CLI/wat.py --distpath ../CLI/dist --workpath ../CLI/build --upx-dir ../CLI/build/wat && cd ../watapp && build"
   },
   "build": {
     "appId": "edu.fiu.watapp",
@@ -26,10 +26,11 @@
         ]
       }
     ],
-    "extraResources": {
+    "extraResources": [{
       "from": "../CLI/dist/",
       "to": "CLIBuild"
-    },
+    }
+    ],
     "fileAssociations": {
       "ext": "wat",
       "name": "WAT"
