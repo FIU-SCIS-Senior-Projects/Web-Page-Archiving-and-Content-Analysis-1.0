@@ -5,6 +5,9 @@ import re
 def find_root_html(search_dir):
     """
     Uses root node graph theory algorithm to find main html file
+    Parameters:
+		search_dir: Directory containing multiple HTML Files
+	Return: root html filename (str)
     """
     html_pattern=re.compile("\"(\\S*\.html)\"|'(\\S\.html)'")
 
@@ -28,7 +31,9 @@ def find_root_html(search_dir):
 
 def find_biggest_html(search_dir):
     """
-    Returns biggest html file in a directory
+    Parameters:
+		search_dir: Directory containing multiple HTML Files
+	Return: biggest html file filename (str)
     """
     max_file = None
     for file in os.listdir(search_dir):
@@ -41,7 +46,9 @@ def find_biggest_html(search_dir):
 
 def find_earliest_file(search_dir):
     """
-    returns oldest file in a directory
+    Parameters:
+		search_dir: Directory containing multiple HTML Files
+	Return: oldest html file filename (str)
     """
     earliest = None
     for file in os.listdir(search_dir):
@@ -53,6 +60,11 @@ def find_earliest_file(search_dir):
     return earliest
 
 def search_wget_output(output):
+    """
+    Parameters:
+		output: output from wget file with flag -nv
+	Return: first downloaded html file filename (str)
+    """
     lines = output.split("\n")
     for line in lines:
         print line

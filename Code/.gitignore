@@ -8,3 +8,6 @@ wget-log
 dist
 build
 wat.spec
+test.csv
+test.xml
+*.mmdb

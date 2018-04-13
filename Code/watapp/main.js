@@ -1,7 +1,6 @@
 const electron = require("electron");
-const unzip = require("unzip");
 var DecompressZip = require("decompress-zip");
-const fs = require("fs");
+const fs = require('fs-extra')
 const fstream = require("fstream");
 const os = require("os");
 // Module to control application life.
@@ -27,12 +26,14 @@ const url = require("url");
 
 let opened_file = process.argv[1];
 
-const temp_dest = os.tmpdir();
+const temp_dest = path.join(os.tmpdir(),'Web Archive');
 
+/*
+This function is asynchronous due to the DecompressZip module
+It returns the unzipper and that unzipper has event handlers for when it finishes, errors or makes progress
+*/
 function unzip_wat(file) {
   devToolsLog(temp_dest);
-  // var unzipper = unzip.Extract({ path: temp_dest })
-  // fs.createReadStream(file).pipe(unzipper);
   var unzipper = new DecompressZip(file);
   unzipper.extract({
     path: temp_dest,
@@ -44,9 +45,14 @@ function unzip_wat(file) {
   return unzipper;
 }
 
-function getWatLink(dir) {
+function getWatLink_v1(dir) {
   var url = fs.readFileSync(path.join(dir, "wat_link.txt"));
   return url.toString();
+}
+
+function getWatLink_v2(dir) {
+  var wat_json = JSON.parse(fs.readFileSync(path.join(dir, "wat.json")));
+  return wat_json.index;
 }
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -67,7 +73,8 @@ function devToolsLog(s) {
   }
 }
 
-function openWAT(opened_file) {
+// unzips wat to temp, determines main html, renders in preferred viewer
+function openWAT_v2(opened_file) {
   const watfile_path = opened_file.split("/");
   const full_filename = watfile_path[watfile_path.length - 1]; // file.wat
   const filename = full_filename.substr(0, full_filename.indexOf(".wat"));
@@ -86,7 +93,12 @@ function openWAT(opened_file) {
       fileLocation = temp_dest;
     }
     console.log(fileLocation);
-    let dest_file = getWatLink(fileLocation);
+    let destfile;
+    if (fs.existsSync(path.join(fileLocation,"wat_link.txt"))) {
+      dest_file = getWatLink_v1(fileLocation);
+    }else if (fs.existsSync(path.join(fileLocation,"wat.json"))) {
+      dest_file = path.join("files",getWatLink_v2(fileLocation));
+    }
     console.log(dest_file);
 
     let url_to_load = url.format({
@@ -106,10 +118,10 @@ function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 1140, height: 800 });
   // mainWindow.webContents.openDevTools();
-  if (opened_file && opened_file != ".") {
+  if (opened_file && opened_file != ".") { // If app opened with argument (either command line or double clicked)
     devToolsLog(opened_file);
     mainWindow.maximize();
-    openWAT(opened_file);
+    openWAT_v2(opened_file);
     if(preferred_viewer=="external"){
       mainWindow.loadURL(
         url.format({
@@ -171,6 +183,10 @@ function createWindow() {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
+    //cleaning up temp directory
+    if (fs.existsSync(temp_dest)) {
+      fs.removeSync(temp_dest);
+    }
   });
 }
 
@@ -208,11 +224,18 @@ ipcMain.on("openWAT", (event, file) => {
   if (preferred_viewer == "internal") {
     mainWindow.maximize();
   }
-  openWAT(file);
+  openWAT_v2(file);
 });
 
+// When other process sends download message
 ipcMain.on("download", (event, downloadOptions) => {
-  const script = path.join(process.resourcesPath, "CLI", "wat.py");
+  var noPython=true;
+  let script;
+  if(noPython){
+    script = ""
+  }else{
+    script = path.join(process.resourcesPath, "CLI", "wat.py");
+  }
   // const script = path.join("../", "CLI", "wat.py");
   var optionsArray = [
     script,
@@ -230,21 +253,27 @@ ipcMain.on("download", (event, downloadOptions) => {
     optionsArray.push("--videos");
   }
   event.sender.send("downloadOutput", "Beginning download");
+  let downloader;
+  if(noPython){
+    downloader = spawn(path.join(process.resourcesPath, "CLIBuild", "wat"), optionsArray.slice(1));
+  }else{
+    downloader = spawn("python", optionsArray);
+  }
 
-  const downloader = spawn("python", optionsArray);
-
-  downloader.stdout.on("data", data => {
+  downloader.stdout.on("data", data => { // Send data based on console output of download
     data = String(data).split("\n");
     console.log(`stdout: ${data}`);
     for (var i = 0; i < data.length; i++) {
       if (data[i].startsWith("Finished for URL")) {
         event.sender.send("downloadOutput", data[i]);
+      }else if (data[i].startsWith("Downloading URL #")) {
+        event.sender.send("downloadOutput", data[i]);
       } else if (data[i].endsWith("URLS found")) {
         event.sender.send("downloadOutput", data[i]);
-      } else if (data[i].startsWith("It can be found at ")) {
+      } else if (data[i].includes("can be found at ")) {
         event.sender.send(
           "downloadOutput",
-          data[i].substr("It can be found at ".length)
+          data[i].slice(data[i].indexOf("#")+1, data[i].indexOf(":")) + " " + data[i].substr(data[i].indexOf("can be found at ")+ "can be found at ".length)
         );
       }
     }
@@ -260,6 +289,7 @@ ipcMain.on("download", (event, downloadOptions) => {
   });
 });
 
+// Handle user preference of viewer
 ipcMain.on("viewer-pref-change", (event, preference) => {
   if (preferred_viewer !== preference) {
     preferred_viewer = preference;

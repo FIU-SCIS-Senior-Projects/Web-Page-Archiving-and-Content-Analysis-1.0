@@ -2,7 +2,19 @@ import argparse
 import os
 import concurrent.futures
 import sys
+import shutil
 from download import download_url
+
+def download_output_wrapper(URL_num, URL, destpath, videos, i, rate_limit):
+	"""
+	Wrapper around download to provide print output for info on what's downloaded and what's done
+	"""
+	print "Downloading URL #" + URL_num + ": " + URL +"\n"
+	sys.stdout.flush()
+	data = download_url( URL, destpath, videos, i, rate_limit)
+	print "Finished for URL #" + URL_num + ": " + URL +"\n"
+	sys.stdout.flush()
+	return data
 
 def main():
 	#add command line arguments
@@ -28,22 +40,23 @@ def main():
 		url = line.strip()
 		URLS.append(url)
 		line = args.file.readline()
-	print str(len(URLS)) + " URLS found"
+	print str(len(URLS)) + " URLS found" +"\n"
 	sys.stdout.flush()
 
 	# run downloads in thread pool executor
 	num_threads=args.threads
 	with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
-		future_to_url = {executor.submit(download_url,URLS[i], destpath, videos, i, args.rate_limit): i for i in range(0,len(URLS))}
+		future_to_url = {executor.submit(download_output_wrapper,str(i),URLS[i], destpath, videos, i, args.rate_limit): i for i in range(0,len(URLS))}
 		for future in concurrent.futures.as_completed(future_to_url):
 			i = future_to_url[future]
 			try:
 				data = future.result()
-				print "Finished for URL #" + str(i) + ": " + URLS[i]
-				print "It can be found at " + str(data)
+				print "URL #" + str(i) + ": " + URLS[i] + " can be found at " + str(data) +"\n"
 				sys.stdout.flush()
 			except Exception as exc:
 				print('%r generated an exception: %s' % (url, exc))
+	shutil.rmtree(os.path.join(destpath,"files"))
+
 
 if __name__ == "__main__":
 	main()
