@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="readability.js"></script>
+	<script>
+		// var loc = document.location;
+		// var uri = {
+		//   spec: loc.href,
+		//   host: loc.host,
+		//   prePath: loc.protocol + "//" + loc.host,
+		//   scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
+		//   pathBase: loc.protocol + "//" + loc.host + loc.pathname.substr(0, loc.pathname.lastIndexOf("/") + 1)
+		// };
+		var uri = {
+			"spec":"http://127.0.0.1:8080/nytimes-1/source.html",
+			"host":"127.0.0.1:8080",
+			"prePath":"http://127.0.0.1:8080",
+			"scheme":"http",
+			"pathBase":"http://127.0.0.1:8080/nytimes-1/"
+		}
+		
+		fetch("./nytimes-1/source.html")
+			.then(d => d.text())
+			.then(text => {
+				var parser = new DOMParser();
+				var doc = parser.parseFromString(text, "text/html");
+				var article = new Readability(uri, doc).parse();
+				console.log(article);
+			}).catch(e => console.log(e));
+
+	</script>
+</head>
+<body>
+	Testing
+</body>
+</html>
