@@ -34,7 +34,7 @@ a=[]
 for folder, subs, files in os.walk(dir_name):
         for filename in files:
             if filename.endswith(".wat"):
-                d = m.extract_data_from_wat(os.path.join(foler,filename))
+                d = m.extract_data_from_wat(os.path.join(folder,filename))
                 if not date == {} and d["title"]:
                     if "publishedDate" in d:
                         d["publishedDate"] = parse(d["publishedDate"]).isoformat()
