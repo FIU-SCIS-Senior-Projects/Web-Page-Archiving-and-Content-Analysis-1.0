@@ -8,12 +8,23 @@ import shutil
 import zipfile
 import json
 from html_root_finder import *
-sys.path.append('../Analysis')
-from metadata_extractor import MetadataExtractor
 from dateutil.parser import parse
 from bs4 import BeautifulSoup
 import geoip2.database
 import socket
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+sys.path.append(resource_path('../Analysis'))
+from metadata_extractor import MetadataExtractor
+
 
 def get_domain_name(url):
 	"""
