@@ -26,7 +26,8 @@ mydict={
     "publisherCountry":"",
     "publisherCoordinates":"",
     "language":"",
-    "url":""
+    "url":"",
+    "content":""
 }
 w = csv.DictWriter(f,mydict.keys())
 w.writeheader()
@@ -48,7 +49,7 @@ for folder, subs, files in os.walk(dir_name):
                 continue
             elif filename.endswith(".html"):
                 d = m.extract_data_from_html(os.path.join(folder,filename))
-                if not d == {} and d["title"] and d["title"]!="ns" and d["title"]!="Facebook" and d["title"]!="IFrame" and d["title"]!="Widget Preview" and d["title"]!="Testing Javascript Widget":
+                if not d == {} and "title" in d and d["title"] and d["title"]!="ns" and d["title"]!="Facebook" and d["title"]!="IFrame" and d["title"]!="Widget Preview" and d["title"]!="Testing Javascript Widget":
                     if "publishedDate" in d:
                         d["publishedDate"] = parse(d["publishedDate"]).isoformat()
                     if "createdDate" in d:
@@ -57,7 +58,7 @@ for folder, subs, files in os.walk(dir_name):
                         d["modifiedDate"] = parse(d["modifiedDate"]).isoformat()
                     d["fileLocation"]=os.path.join(folder,filename)
                     a.append(d)
-                    w.writerow(d)
+                    # w.writerow(d)
                 continue
             else:
                 continue

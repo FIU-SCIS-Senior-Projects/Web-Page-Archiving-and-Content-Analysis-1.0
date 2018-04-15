@@ -233,14 +233,14 @@ def initialize_node(node):
 def remove_scripts(doc):
     nodes = doc.find_all('script')
     for n in nodes: n.extract()
-        
+
     no_scripts = doc.find_all('noscript')
     for n in no_scripts: n.extract()
-    
+
     head = doc.find('head')
-    for el in head(text=lambda text: isinstance(text, Comment)): 
+    for el in head(text=lambda text: isinstance(text, Comment)):
         el.extract()
-        
+
     return doc
 
 """
@@ -248,23 +248,23 @@ Replaces 2 or more successive <br> elements with a single <p>.
 """
 def replace_brs(elem, doc):
     all_brs = elem.find_all('br')
-    
-    for br in all_brs: 
+
+    for br in all_brs:
         if not br: continue
         nxt = br.next_element
         replaced = False
-        
+
         while nxt != None and is_tag(nxt.next_element) and nxt.next_element.name == 'br':
             replaced = True
             nxt = nxt.next_element
             brSibl = nxt.next_element
             nxt.extract()
             nxt = brSibl
-        
+
         if replaced:
             p = doc.new_tag('p')
             br.replace_with(p)
-            
+
             if p.next_element != None:
                 nxt = p.next_element
                 while nxt != None:
@@ -279,16 +279,16 @@ def replace_brs(elem, doc):
                     if sibl:
                         p.append(sibl)
                     nxt = sibl
-        
+
     return doc
 
 def prep_document(doc):
     styles = doc.find_all('style')
     for n in styles: n.extract()
-        
+
     body = doc.body
     doc = replace_brs(body, doc)
-    
+
     return doc
 
 def check_byline(node, match_string):
@@ -410,13 +410,15 @@ def get_article(doc):
 def parse(file_path):
     with open(file_path) as fp:
         soup = BeautifulSoup(fp, "lxml")
-        doc = copy.copy(soup)
+        try:
+            doc = copy.copy(soup)
 
-        doc = remove_scripts(soup)
-        doc = prep_document(doc)
-        content = get_article(doc)
-        return content
-
+            doc = remove_scripts(soup)
+            doc = prep_document(doc)
+            content = get_article(doc)
+            return content
+        except Exception as e:
+            return None
 
 def extract_content_from_html(file_name):
     """

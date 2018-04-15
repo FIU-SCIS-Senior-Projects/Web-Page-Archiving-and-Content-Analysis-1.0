@@ -330,8 +330,9 @@ class MetadataExtractor:
         else:
             self.data["url"]=url
             self.get_publisher_origin(url)
-
-        self.data["content"] = content_extractor.extract_content_from_html(file_name)
+        content = content_extractor.extract_content_from_html(file_name)
+        if content:
+            self.data["content"] = content
 
         return self.data
 
