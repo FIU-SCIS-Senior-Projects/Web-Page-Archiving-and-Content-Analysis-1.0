@@ -27,6 +27,7 @@ const url = require("url");
 let opened_file = process.argv[1];
 
 const temp_dest = path.join(os.tmpdir(),'Web Archive');
+const electronLocalshortcut = require('electron-localshortcut');
 
 /*
 This function is asynchronous due to the DecompressZip module
@@ -187,6 +188,10 @@ function createWindow() {
     if (fs.existsSync(temp_dest)) {
       fs.removeSync(temp_dest);
     }
+  });
+  electronLocalshortcut.register(mainWindow, 'Alt+Left', () => {
+      // Open DevTools
+      mainWindow.webContents.goBack();
   });
 }
 
