@@ -193,7 +193,7 @@ function createWindow() {
   electronLocalshortcut.register(mainWindow, 'Alt+Left', () => {
       mainWindow.webContents.goBack();
   });
-  electronLocalshortcut.register(mainWindow, 'Alt+u', () => {
+  electronLocalshortcut.register(mainWindow, 'Alt+U', () => {
       mainWindow.loadURL(
         url.format({
           pathname: extractLocation,
