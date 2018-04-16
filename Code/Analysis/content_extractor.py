@@ -154,11 +154,13 @@ def next_element_sibling(n):
     return el
 
 
-"""
-Get the density of links as a percentage of the content
-This is the amount of text that is inside a link divided by the total text in the node
-"""
+""" Content score helpers """
+
 def get_link_density(element):
+    """
+    Get the density of links as a percentage of the content
+    This is the amount of text that is inside a link divided by the total text in the node
+    """
     txt_len = len(element.get_text())
     if txt_len == 0:
         return 0
@@ -169,9 +171,6 @@ def get_link_density(element):
         link_len += len(l.get_text())
 
     return link_len / txt_len
-
-
-""" Content score helpers """
 
 def was_score_initialized(node):
     return node.get('data-contentscore') != None
