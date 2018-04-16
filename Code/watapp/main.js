@@ -28,7 +28,7 @@ let opened_file = process.argv[1];
 
 const temp_dest = path.join(os.tmpdir(),'Web Archive');
 const electronLocalshortcut = require('electron-localshortcut');
-
+let extractLocation;
 /*
 This function is asynchronous due to the DecompressZip module
 It returns the unzipper and that unzipper has event handlers for when it finishes, errors or makes progress
@@ -101,6 +101,7 @@ function openWAT_v2(opened_file) {
       dest_file = path.join("files",getWatLink_v2(fileLocation));
     }
     console.log(dest_file);
+    extractLocation= path.join(fileLocation,"extraction","meta.json")
 
     let url_to_load = url.format({
       pathname: path.join(fileLocation, `${dest_file}`),
@@ -190,8 +191,16 @@ function createWindow() {
     }
   });
   electronLocalshortcut.register(mainWindow, 'Alt+Left', () => {
-      // Open DevTools
       mainWindow.webContents.goBack();
+  });
+  electronLocalshortcut.register(mainWindow, 'Alt+u', () => {
+      mainWindow.loadURL(
+        url.format({
+          pathname: extractLocation,
+          protocol: "file:",
+          slashes: true
+        })
+      );
   });
 }
 

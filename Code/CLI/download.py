@@ -142,7 +142,7 @@ def make_wat_file(full_path, dest_path, url, index):
 		d["modifiedDate"] = date
 	d["url"]=url
 	with open(os.path.join(full_path,'meta.json'), 'w') as fp:
-		json.dump(d, fp)
+		json.dump(d, fp,indent=4)
 	zf.write(os.path.join(full_path,'meta.json'), arcname="extraction/meta.json")
 
 	# Close zip and return wat file name
