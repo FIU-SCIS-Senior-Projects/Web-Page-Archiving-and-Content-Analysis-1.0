@@ -201,15 +201,3 @@ class TestContentUtils(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-    # tests_to_run = [TestExtractorUtils]
-
-    # loader = unittest.TestLoader()
-
-    # suites = []
-    # for test_class in tests_to_run:
-    #     suite = loader.loadTestsFromTestCase(test_class)
-    #     suites.append(suite)
-
-    # all_suites = unittest.TestSuite(suites)
-
-    # runner = unittest.TextTestRunner()
