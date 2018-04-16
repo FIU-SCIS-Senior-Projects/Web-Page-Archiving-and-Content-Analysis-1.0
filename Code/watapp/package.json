@@ -30,6 +30,10 @@
       {
         "from": "../CLI/dist/",
         "to": "CLIBuild"
+      },
+      {
+        "from": "./assets/icon.png",
+        "to": "./build/icon.png"
       }
     ],
     "fileAssociations": {
