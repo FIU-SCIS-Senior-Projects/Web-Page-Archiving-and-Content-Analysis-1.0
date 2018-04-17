@@ -118,7 +118,7 @@ function openWAT_v2(opened_file) {
 
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 1140, height: 800 });
+  mainWindow = new BrowserWindow({ width: 1140, height: 800, icon: path.join(__dirname, 'assets/icons/png/64x64.png') });
   // mainWindow.webContents.openDevTools();
   if (opened_file && opened_file != ".") { // If app opened with argument (either command line or double clicked)
     devToolsLog(opened_file);
