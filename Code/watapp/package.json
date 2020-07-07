@@ -41,7 +41,7 @@
   "author": "FIU",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "~1.7.8",
+    "electron": "~7.2.4",
     "electron-builder": "^19.56.0"
   },
   "dependencies": {
